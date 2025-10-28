@@ -89,11 +89,11 @@ export const ModernGameResultsScreen: React.FC<ModernGameResultsScreenProps> = (
   }, []);
 
   const getPerformanceMessage = () => {
-    if (stats.accuracy >= 90) return '🎉 Ausgezeichnet!';
-    if (stats.accuracy >= 80) return '✨ Sehr gut!';
-    if (stats.accuracy >= 70) return '👍 Gut gemacht!';
-    if (stats.accuracy >= 50) return '💪 Nicht schlecht!';
-    return '📚 Weiter üben!';
+    if (stats.accuracy >= 90) return '🎉 Excellent!';
+    if (stats.accuracy >= 80) return '✨ Very Good!';
+    if (stats.accuracy >= 70) return '👍 Well Done!';
+    if (stats.accuracy >= 50) return '💪 Not Bad!';
+    return '📚 Keep Practicing!';
   };
 
   const getPerformanceGradient = () => {
@@ -181,7 +181,7 @@ export const ModernGameResultsScreen: React.FC<ModernGameResultsScreenProps> = (
           <Text style={styles.congratsText}>{getPerformanceMessage()}</Text>
           {isNewHighScore && (
             <Badge variant="success" size="lg" icon="star">
-              Neuer Rekord!
+              New Record!
             </Badge>
           )}
         </Animated.View>
@@ -189,14 +189,14 @@ export const ModernGameResultsScreen: React.FC<ModernGameResultsScreenProps> = (
         {/* Score Card */}
         <Animated.View style={{ opacity: fadeAnim }}>
           <Card gradient gradientColors={getPerformanceGradient()} padding={6} style={styles.scoreCard}>
-            <Text style={styles.scoreLabel}>Deine Punktzahl</Text>
+            <Text style={styles.scoreLabel}>Your Score</Text>
             <AnimatedNumber
               value={stats.score}
               duration={1500}
               style={styles.scoreValue}
             />
             <Text style={styles.scoreSubtext}>
-              von {stats.totalQuestions} Fragen
+              out of {stats.totalQuestions} questions
             </Text>
           </Card>
         </Animated.View>
@@ -206,29 +206,29 @@ export const ModernGameResultsScreen: React.FC<ModernGameResultsScreenProps> = (
           <Card variant="elevated" padding={4} style={styles.statCard}>
             <MaterialIcons name="check-circle" size={32} color={theme.colors.success[500]} />
             <Text style={styles.statValue}>{stats.correctAnswers}</Text>
-            <Text style={styles.statLabel}>Richtig</Text>
+            <Text style={styles.statLabel}>Correct</Text>
           </Card>
 
           <Card variant="elevated" padding={4} style={styles.statCard}>
             <MaterialIcons name="cancel" size={32} color={theme.colors.error[500]} />
             <Text style={styles.statValue}>{stats.incorrectAnswers}</Text>
-            <Text style={styles.statLabel}>Falsch</Text>
+            <Text style={styles.statLabel}>Wrong</Text>
           </Card>
 
           <Card variant="elevated" padding={4} style={styles.statCard}>
             <MaterialIcons name="remove-circle" size={32} color={theme.colors.gray[500]} />
             <Text style={styles.statValue}>{stats.skippedAnswers}</Text>
-            <Text style={styles.statLabel}>Übersprungen</Text>
+            <Text style={styles.statLabel}>Skipped</Text>
           </Card>
         </View>
 
         {/* Detailed Stats */}
         <Card variant="elevated" padding={5} style={styles.detailsCard}>
-          <Text style={styles.detailsTitle}>Deine Leistung</Text>
+          <Text style={styles.detailsTitle}>Your Performance</Text>
 
           {/* Accuracy */}
           <View style={styles.detailRow}>
-            <Text style={styles.detailLabel}>Genauigkeit</Text>
+            <Text style={styles.detailLabel}>Accuracy</Text>
             <Text style={styles.detailValue}>{stats.accuracy.toFixed(1)}%</Text>
           </View>
           <ProgressBar
@@ -243,7 +243,7 @@ export const ModernGameResultsScreen: React.FC<ModernGameResultsScreenProps> = (
           <View style={styles.detailRow}>
             <View style={styles.detailLabelContainer}>
               <MaterialIcons name="access-time" size={20} color={theme.colors.text.secondary} />
-              <Text style={styles.detailLabel}>Zeit benötigt</Text>
+              <Text style={styles.detailLabel}>Time Taken</Text>
             </View>
             <Text style={styles.detailValue}>{formatTime(stats.timeTaken)}</Text>
           </View>
@@ -253,7 +253,7 @@ export const ModernGameResultsScreen: React.FC<ModernGameResultsScreenProps> = (
             <View style={styles.detailRow}>
               <View style={styles.detailLabelContainer}>
                 <MaterialIcons name="leaderboard" size={20} color={theme.colors.text.secondary} />
-                <Text style={styles.detailLabel}>Aktueller Rang</Text>
+                <Text style={styles.detailLabel}>Current Rank</Text>
               </View>
               <Badge variant="primary" size="md">
                 #{stats.rank}
@@ -266,7 +266,7 @@ export const ModernGameResultsScreen: React.FC<ModernGameResultsScreenProps> = (
             <View style={styles.detailRow}>
               <View style={styles.detailLabelContainer}>
                 <MaterialIcons name="monetization-on" size={20} color={theme.colors.secondary[500]} />
-                <Text style={styles.detailLabel}>Verdiente Credits</Text>
+                <Text style={styles.detailLabel}>Earned Credits</Text>
               </View>
               <Badge variant="secondary" size="md" icon="add">
                 +{stats.earnedCredits}
@@ -286,7 +286,7 @@ export const ModernGameResultsScreen: React.FC<ModernGameResultsScreenProps> = (
               style={styles.primaryButton}
             >
               <MaterialIcons name="replay" size={24} color={theme.colors.white} />
-              <Text style={styles.primaryButtonText}>Nochmal spielen</Text>
+              <Text style={styles.primaryButtonText}>Play Again</Text>
             </LinearGradient>
           </TouchableOpacity>
 
@@ -294,19 +294,19 @@ export const ModernGameResultsScreen: React.FC<ModernGameResultsScreenProps> = (
           <View style={styles.secondaryActions}>
             <TouchableOpacity onPress={onViewLeaderboard} style={styles.secondaryButton}>
               <MaterialIcons name="leaderboard" size={20} color={theme.colors.primary[500]} />
-              <Text style={styles.secondaryButtonText}>Bestenliste</Text>
+              <Text style={styles.secondaryButtonText}>Leaderboard</Text>
             </TouchableOpacity>
 
             {onShare && (
               <TouchableOpacity onPress={onShare} style={styles.secondaryButton}>
                 <MaterialIcons name="share" size={20} color={theme.colors.primary[500]} />
-                <Text style={styles.secondaryButtonText}>Teilen</Text>
+                <Text style={styles.secondaryButtonText}>Share</Text>
               </TouchableOpacity>
             )}
 
             <TouchableOpacity onPress={onBackToHome} style={styles.secondaryButton}>
               <MaterialIcons name="home" size={20} color={theme.colors.primary[500]} />
-              <Text style={styles.secondaryButtonText}>Startseite</Text>
+              <Text style={styles.secondaryButtonText}>Home</Text>
             </TouchableOpacity>
           </View>
         </View>

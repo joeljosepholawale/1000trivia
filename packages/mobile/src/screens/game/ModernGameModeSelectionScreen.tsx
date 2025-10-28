@@ -41,10 +41,10 @@ const gameModes: GameModeDetail[] = [
   {
     id: '1',
     type: 'FREE',
-    name: 'Wöchentliches Quiz',
-    subtitle: 'Spiele kostenlos und gewinne!',
+    name: 'Weekly Quiz',
+    subtitle: 'Play for free and win!',
     questions: 1000,
-    entryFee: 'Kostenlos',
+    entryFee: 'Free',
     entryFeeValue: 0,
     entryFeeCurrency: 'CREDITS',
     prizePool: '$100',
@@ -52,14 +52,14 @@ const gameModes: GameModeDetail[] = [
     icon: 'play-circle-filled',
     participants: 1247,
     maxParticipants: 10000,
-    timeLeft: '3 Tage 14 Stunden',
-    requirements: ['E-Mail Verifizierung'],
+    timeLeft: '3 Days 14 Hours',
+    requirements: ['Email Verification'],
     featured: true,
   },
   {
     id: '2',
     type: 'CHALLENGE',
-    name: 'Monatliche Challenge',
+    name: 'Monthly Challenge',
     subtitle: 'Intensive Competition',
     questions: 100,
     entryFee: '$10',
@@ -70,14 +70,14 @@ const gameModes: GameModeDetail[] = [
     icon: 'whatshot',
     participants: 342,
     maxParticipants: 1000,
-    timeLeft: '12 Tage 8 Stunden',
-    requirements: ['E-Mail Verifizierung', 'Bezahlung $10'],
+    timeLeft: '12 Days 8 Hours',
+    requirements: ['Email Verification', 'Payment $10'],
   },
   {
     id: '3',
     type: 'TOURNAMENT',
-    name: 'Grand Turnier',
-    subtitle: 'Für erfahrene Spieler',
+    name: 'Grand Tournament',
+    subtitle: 'For experienced players',
     questions: 1000,
     entryFee: '1,000 Credits',
     entryFeeValue: 1000,
@@ -87,14 +87,14 @@ const gameModes: GameModeDetail[] = [
     icon: 'emoji-events',
     participants: 89,
     maxParticipants: 500,
-    timeLeft: '18 Tage 5 Stunden',
-    requirements: ['E-Mail Verifizierung', '1,000 Credits Guthaben'],
+    timeLeft: '18 Days 5 Hours',
+    requirements: ['Email Verification', '1,000 Credits Balance'],
   },
   {
     id: '4',
     type: 'SUPER_TOURNAMENT',
-    name: 'Super Meisterschaft',
-    subtitle: 'Ultimative Herausforderung',
+    name: 'Super Championship',
+    subtitle: 'Ultimate Challenge',
     questions: 1000,
     entryFee: '10,000 Credits',
     entryFeeValue: 10000,
@@ -104,8 +104,8 @@ const gameModes: GameModeDetail[] = [
     icon: 'military-tech',
     participants: 12,
     maxParticipants: 100,
-    timeLeft: '25 Tage 3 Stunden',
-    requirements: ['E-Mail Verifizierung', '10,000 Credits Guthaben', 'Level 10+'],
+    timeLeft: '25 Days 3 Hours',
+    requirements: ['Email Verification', '10,000 Credits Balance', 'Level 10+'],
   },
 ];
 
@@ -154,15 +154,15 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
     const missing: string[] = [];
     
     if (!isEmailVerified) {
-      missing.push('E-Mail muss verifiziert werden');
+      missing.push('Email must be verified');
     }
     
     if (selectedMode.entryFeeCurrency === 'CREDITS' && userCredits < selectedMode.entryFeeValue) {
-      missing.push(`Benötigt ${selectedMode.entryFeeValue - userCredits} mehr Credits`);
+      missing.push(`Need ${selectedMode.entryFeeValue - userCredits} more credits`);
     }
     
     if (selectedMode.type === 'SUPER_TOURNAMENT' && userLevel < 10) {
-      missing.push(`Benötigt Level ${10 - userLevel} mehr`);
+      missing.push(`Need ${10 - userLevel} more levels`);
     }
     
     return missing;
@@ -208,7 +208,7 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
           {mode.featured && (
             <View style={styles.featuredBadge}>
               <MaterialIcons name="star" size={14} color={theme.colors.secondary[500]} />
-              <Text style={styles.featuredText}>Beliebt</Text>
+              <Text style={styles.featuredText}>Popular</Text>
             </View>
           )}
 
@@ -225,11 +225,11 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
           <View style={styles.statsContainer}>
             <View style={styles.stat}>
               <MaterialIcons name="help" size={20} color={theme.colors.white} />
-              <Text style={styles.statText}>{mode.questions} Fragen</Text>
+              <Text style={styles.statText}>{mode.questions} Questions</Text>
             </View>
             <View style={styles.stat}>
               <MaterialIcons name="people" size={20} color={theme.colors.white} />
-              <Text style={styles.statText}>{mode.participants} Spieler</Text>
+              <Text style={styles.statText}>{mode.participants} Players</Text>
             </View>
           </View>
 
@@ -237,7 +237,7 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
           <View style={styles.prizeContainer}>
             <MaterialIcons name="emoji-events" size={32} color={theme.colors.white} />
             <View>
-              <Text style={styles.prizeLabel}>Preispool</Text>
+              <Text style={styles.prizeLabel}>Prize Pool</Text>
               <Text style={styles.prizeValue}>{mode.prizePool}</Text>
             </View>
           </View>
@@ -252,7 +252,7 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
             style={styles.progressBar}
           />
           <Text style={styles.participantsText}>
-            {mode.participants} / {mode.maxParticipants} Teilnehmer
+            {mode.participants} / {mode.maxParticipants} Participants
           </Text>
         </LinearGradient>
       </Animated.View>
@@ -268,7 +268,7 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
         <TouchableOpacity onPress={onBack} style={styles.backButton}>
           <MaterialIcons name="arrow-back" size={24} color={theme.colors.text.primary} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Spielmodus wählen</Text>
+        <Text style={styles.headerTitle}>Choose Game Mode</Text>
         <View style={styles.placeholder} />
       </View>
 
@@ -316,7 +316,7 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
             <View style={styles.detailRow}>
               <View style={styles.detailLabel}>
                 <MaterialIcons name="confirmation-number" size={20} color={theme.colors.text.secondary} />
-                <Text style={styles.detailLabelText}>Teilnahmegebühr</Text>
+                <Text style={styles.detailLabelText}>Entry Fee</Text>
               </View>
               <Badge
                 variant={selectedMode.entryFeeValue === 0 ? 'success' : 'primary'}
@@ -332,7 +332,7 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
             <View style={styles.detailRow}>
               <View style={styles.detailLabel}>
                 <MaterialIcons name="access-time" size={20} color={theme.colors.text.secondary} />
-                <Text style={styles.detailLabelText}>Verbleibende Zeit</Text>
+                <Text style={styles.detailLabelText}>Time Remaining</Text>
               </View>
               <Text style={styles.detailValue}>{selectedMode.timeLeft}</Text>
             </View>
@@ -340,7 +340,7 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
 
           {/* Requirements */}
           <View style={styles.detailCard}>
-            <Text style={styles.requirementsTitle}>Anforderungen:</Text>
+            <Text style={styles.requirementsTitle}>Requirements:</Text>
             {selectedMode.requirements.map((req, index) => (
               <View key={index} style={styles.requirement}>
                 <MaterialIcons name="check-circle" size={18} color={theme.colors.success[500]} />
@@ -352,7 +352,7 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
           {/* Missing Requirements */}
           {getMissingRequirements().length > 0 && (
             <View style={[styles.detailCard, styles.warningCard]}>
-              <Text style={styles.warningTitle}>Fehlende Anforderungen:</Text>
+              <Text style={styles.warningTitle}>Missing Requirements:</Text>
               {getMissingRequirements().map((req, index) => (
                 <View key={index} style={styles.requirement}>
                   <MaterialIcons name="error" size={18} color={theme.colors.error[500]} />
@@ -378,7 +378,7 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
             style={[styles.joinButton, !canJoin() && styles.joinButtonDisabled]}
           >
             <Text style={styles.joinButtonText}>
-              {canJoin() ? 'Jetzt beitreten' : 'Anforderungen nicht erfüllt'}
+              {canJoin() ? 'Join Now' : 'Requirements Not Met'}
             </Text>
             {canJoin() && (
               <MaterialIcons name="arrow-forward" size={24} color={theme.colors.white} />

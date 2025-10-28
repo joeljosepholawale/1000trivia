@@ -4,3 +4,6 @@
 ../backend
 ../admin
 ../shared
+android/.gradle
+android/build
+android/app/build

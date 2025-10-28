@@ -94,12 +94,12 @@ export const ModernGameplayScreen: React.FC<ModernGameplayScreenProps> = ({
 
   const handleSkip = () => {
     Alert.alert(
-      'Frage überspringen',
-      'Möchtest du diese Frage wirklich überspringen?',
+      'Skip Question',
+      'Do you really want to skip this question?',
       [
-        { text: 'Abbrechen', style: 'cancel' },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Überspringen',
+          text: 'Skip',
           style: 'destructive',
           onPress: onSkip,
         },
@@ -109,12 +109,12 @@ export const ModernGameplayScreen: React.FC<ModernGameplayScreenProps> = ({
 
   const handleQuit = () => {
     Alert.alert(
-      'Spiel beenden',
-      'Möchtest du das Spiel wirklich beenden? Dein Fortschritt geht verloren.',
+      'Quit Game',
+      'Do you really want to quit the game? Your progress will be lost.',
       [
-        { text: 'Abbrechen', style: 'cancel' },
+        { text: 'Cancel', style: 'cancel' },
         {
-          text: 'Beenden',
+          text: 'Quit',
           style: 'destructive',
           onPress: onQuit,
         },
@@ -190,7 +190,7 @@ export const ModernGameplayScreen: React.FC<ModernGameplayScreenProps> = ({
         {/* Progress */}
         <View style={styles.progressContainer}>
           <Text style={styles.progressText}>
-            Frage {currentQuestionIndex + 1}/{totalQuestions}
+            Question {currentQuestionIndex + 1}/{totalQuestions}
           </Text>
           <ProgressBar
             progress={progress}
@@ -212,11 +212,11 @@ export const ModernGameplayScreen: React.FC<ModernGameplayScreenProps> = ({
       <View style={styles.statsRow}>
         <View style={styles.statItem}>
           <MaterialIcons name="star" size={20} color={theme.colors.secondary[500]} />
-          <Text style={styles.statText}>{score} Punkte</Text>
+          <Text style={styles.statText}>{score} Points</Text>
         </View>
         <View style={styles.statItem}>
           <MaterialIcons name="check-circle" size={20} color={theme.colors.success[500]} />
-          <Text style={styles.statText}>{correctAnswers} Richtig</Text>
+          <Text style={styles.statText}>{correctAnswers} Correct</Text>
         </View>
       </View>
 
@@ -314,7 +314,7 @@ export const ModernGameplayScreen: React.FC<ModernGameplayScreenProps> = ({
               color={theme.colors.white}
             />
             <Text style={styles.resultText}>
-              {isCorrect ? 'Richtig!' : 'Falsch!'}
+              {isCorrect ? 'Correct!' : 'Wrong!'}
             </Text>
           </LinearGradient>
         </Animated.View>
@@ -322,7 +322,7 @@ export const ModernGameplayScreen: React.FC<ModernGameplayScreenProps> = ({
 
       {/* Skip Button */}
       <TouchableOpacity onPress={handleSkip} style={styles.skipButton}>
-        <Text style={styles.skipButtonText}>Überspringen</Text>
+        <Text style={styles.skipButtonText}>Skip</Text>
         <MaterialIcons name="skip-next" size={20} color={theme.colors.text.secondary} />
       </TouchableOpacity>
     </SafeAreaView>
