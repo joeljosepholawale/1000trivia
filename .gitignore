@@ -3,6 +3,13 @@ node_modules/
 .expo/
 .expo-shared/
 
+# Android/Gradle
+android/.gradle/
+android/build/
+android/app/build/
+*.apk
+*.aab
+
 # Root workspace files (exclude from mobile builds)
 /package.json
 /package-lock.json
