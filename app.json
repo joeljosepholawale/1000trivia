@@ -1,0 +1,55 @@
+{
+  "expo": {
+    "name": "1000 Ravier",
+    "slug": "1000ravier",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#2E7D32"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ravier1000.mobile"
+    },
+    "android": {
+      "package": "com.ravier1000",
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#2E7D32"
+      },
+      "permissions": [
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "plugins": [
+      "expo-font",
+      "expo-secure-store",
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#2E7D32",
+          "image": null,
+          "imageWidth": 200
+        }
+      ]
+    ],
+    "updates": {
+      "enabled": false
+    },
+    "owner": "joezeal002",
+    "extra": {
+      "eas": {
+        "projectId": "bd655ec7-7393-4868-aba8-e7f9910a45fc"
+      }
+    }
+  }
+}
