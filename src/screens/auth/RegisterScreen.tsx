@@ -9,7 +9,6 @@ import {
   ScrollView,
   Alert,
   StyleSheet,
-  Animated,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch, useSelector} from 'react-redux';
@@ -33,16 +32,6 @@ export const RegisterScreen = ({navigation}: Props) => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [username, setUsername] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  
-  const fadeAnim = new Animated.Value(0);
-
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 600,
-      useNativeDriver: true,
-    }).start();
-  }, []);
 
   useEffect(() => {
     if (error) {
@@ -103,7 +92,7 @@ export const RegisterScreen = ({navigation}: Props) => {
             showsVerticalScrollIndicator={false}
             keyboardShouldPersistTaps="handled"
           >
-            <Animated.View style={[styles.content, {opacity: fadeAnim}]}>
+            <View style={styles.content}>
               
               {/* Header */}
               <View style={styles.header}>
@@ -221,7 +210,7 @@ export const RegisterScreen = ({navigation}: Props) => {
                   </TouchableOpacity>
                 </View>
               </View>
-            </Animated.View>
+            </View>
           </ScrollView>
         </KeyboardAvoidingView>
       </SafeAreaView>
@@ -250,9 +239,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 24,
     paddingVertical: 40,
+    minHeight: '100%',
   },
   content: {
-    flex: 1,
     justifyContent: 'center',
   },
   header: {
