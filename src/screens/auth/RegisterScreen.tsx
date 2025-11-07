@@ -16,7 +16,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {LinearGradient} from 'expo-linear-gradient';
 import {MaterialIcons} from '@expo/vector-icons';
-import {BlurView} from 'expo-blur';
 
 import {AuthStackParamList} from '@/navigation/AuthNavigator';
 import {RootState, AppDispatch} from '@/store';
@@ -134,8 +133,8 @@ export const RegisterScreen = ({navigation}: Props) => {
                 <Text style={styles.subtitle}>Start Your Journey to Cash Prizes! 🎁</Text>
               </View>
 
-              {/* Form Card with Glassmorphism */}
-              <BlurView intensity={20} tint="light" style={styles.formCard}>
+              {/* Form Card */}
+              <View style={styles.formCard}>
                 <View style={styles.formContent}>
                   <Text style={styles.welcomeText}>Create Account ✨</Text>
                   <Text style={styles.registerSubtext}>Join thousands of players worldwide</Text>
@@ -244,7 +243,7 @@ export const RegisterScreen = ({navigation}: Props) => {
                     <Text style={styles.termsLink}>Terms & Conditions</Text>
                   </Text>
                 </View>
-              </BlurView>
+              </View>
 
               {/* Login Link */}
               <View style={styles.footer}>
@@ -320,16 +319,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   formCard: {
-    borderRadius: 30,
-    overflow: 'hidden',
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.92)',
+    borderWidth: 0,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 20},
-    shadowOpacity: 0.3,
-    shadowRadius: 30,
-    elevation: 20,
+    shadowOpacity: 0.2,
+    shadowRadius: 24,
+    elevation: 12,
   },
   formContent: {
     padding: 28,
@@ -337,12 +334,12 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 26,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#1a1a1a',
     marginBottom: 6,
   },
   registerSubtext: {
     fontSize: 15,
-    color: 'rgba(255,255,255,0.8)',
+    color: '#666',
     marginBottom: 24,
   },
   inputContainer: {
@@ -385,7 +382,7 @@ const styles = StyleSheet.create({
   strengthBar: {
     flex: 1,
     height: 4,
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: '#e0e0e0',
     borderRadius: 2,
   },
   strengthBarActive: {
@@ -393,7 +390,7 @@ const styles = StyleSheet.create({
   },
   strengthText: {
     fontSize: 12,
-    color: 'rgba(255,255,255,0.9)',
+    color: '#666',
     fontWeight: '600',
   },
   registerButton: {
@@ -417,13 +414,13 @@ const styles = StyleSheet.create({
   },
   termsText: {
     fontSize: 12,
-    color: 'rgba(255,255,255,0.7)',
+    color: '#999',
     textAlign: 'center',
     marginTop: 16,
   },
   termsLink: {
     fontWeight: '600',
-    color: '#fff',
+    color: '#667eea',
     textDecorationLine: 'underline',
   },
   footer: {

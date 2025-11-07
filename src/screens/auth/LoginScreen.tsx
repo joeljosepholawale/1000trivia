@@ -16,7 +16,6 @@ import {useDispatch, useSelector} from 'react-redux';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {LinearGradient} from 'expo-linear-gradient';
 import {MaterialIcons} from '@expo/vector-icons';
-import {BlurView} from 'expo-blur';
 
 import {AuthStackParamList} from '@/navigation/AuthNavigator';
 import {RootState, AppDispatch} from '@/store';
@@ -121,8 +120,8 @@ export const LoginScreen = ({navigation}: Props) => {
                 <Text style={styles.subtitle}>Knowledge • Competition • Cash Prizes</Text>
               </View>
 
-              {/* Form Card with Glassmorphism */}
-              <BlurView intensity={20} tint="light" style={styles.formCard}>
+              {/* Form Card */}
+              <View style={styles.formCard}>
                 <View style={styles.formContent}>
                   <Text style={styles.welcomeText}>Welcome Back! 👋</Text>
                   <Text style={styles.loginSubtext}>Sign in to continue your journey</Text>
@@ -202,7 +201,7 @@ export const LoginScreen = ({navigation}: Props) => {
                     </TouchableOpacity>
                   </View>
                 </View>
-              </BlurView>
+              </View>
 
               {/* Register Link */}
               <View style={styles.footer}>
@@ -277,16 +276,14 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   formCard: {
-    borderRadius: 30,
-    overflow: 'hidden',
-    backgroundColor: 'rgba(255, 255, 255, 0.25)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.92)',
+    borderWidth: 0,
     shadowColor: '#000',
     shadowOffset: {width: 0, height: 20},
-    shadowOpacity: 0.3,
-    shadowRadius: 30,
-    elevation: 20,
+    shadowOpacity: 0.2,
+    shadowRadius: 24,
+    elevation: 12,
   },
   formContent: {
     padding: 30,
@@ -294,12 +291,12 @@ const styles = StyleSheet.create({
   welcomeText: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#1a1a1a',
     marginBottom: 8,
   },
   loginSubtext: {
     fontSize: 16,
-    color: 'rgba(255,255,255,0.8)',
+    color: '#666',
     marginBottom: 30,
   },
   inputContainer: {
@@ -354,10 +351,10 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    backgroundColor: '#ddd',
   },
   dividerText: {
-    color: 'rgba(255,255,255,0.8)',
+    color: '#999',
     paddingHorizontal: 16,
     fontSize: 14,
     fontWeight: '600',
