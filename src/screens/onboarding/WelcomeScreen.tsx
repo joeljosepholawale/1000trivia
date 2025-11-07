@@ -28,31 +28,31 @@ interface OnboardingSlide {
 const slides: OnboardingSlide[] = [
   {
     id: '1',
-    title: '🧠 Test Your Knowledge',
+    title: 'Test Your Knowledge',
     description: 'Answer thousands of exciting questions from all knowledge areas',
     icon: 'quiz',
-    gradient: ['#667eea', '#764ba2'],
+    gradient: ['#6366f1', '#8b5cf6'],
   },
   {
     id: '2',
-    title: '💰 Win Real Money',
+    title: 'Win Real Money',
     description: 'Earn points and exchange them for actual cash prizes',
     icon: 'attach-money',
-    gradient: ['#f093fb', '#f5576c'],
+    gradient: ['#8b5cf6', '#ec4899'],
   },
   {
     id: '3',
-    title: '🏆 Compete & Conquer',
+    title: 'Compete & Win',
     description: 'Battle your way to the top of the leaderboard and become champion',
     icon: 'emoji-events',
-    gradient: ['#4facfe', '#00f2fe'],
+    gradient: ['#6366f1', '#8b5cf6'],
   },
   {
     id: '4',
-    title: '🎁 Daily Rewards',
-    description: 'Get free credits every day and watch ads for bonus rewards',
+    title: 'Daily Rewards',
+    description: 'Get free credits every day and unlock amazing bonuses',
     icon: 'redeem',
-    gradient: ['#43e97b', '#38f9d7'],
+    gradient: ['#8b5cf6', '#ec4899'],
   },
 ];
 
