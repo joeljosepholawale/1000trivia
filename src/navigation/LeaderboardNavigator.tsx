@@ -2,7 +2,7 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Colors} from '../styles/colors';
 
-import {LeaderboardScreen} from '../screens/PlaceholderScreens';
+import {LeaderboardScreen} from '@/screens/leaderboard/LeaderboardScreenWorking';
 
 export type LeaderboardStackParamList = {
   Leaderboard: undefined;
