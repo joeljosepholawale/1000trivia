@@ -29,31 +29,31 @@ interface OnboardingSlide {
 const slides: OnboardingSlide[] = [
   {
     id: '1',
-    title: 'Test Your Knowledge',
-    description: 'Answer thousands of exciting questions from all knowledge areas',
-    icon: 'quiz',
+    title: '1000 Questions',
+    description: 'Challenge yourself with thousands of curated trivia questions across multiple categories',
+    icon: 'psychology',
     gradient: ['#6366f1', '#8b5cf6'],
   },
   {
     id: '2',
-    title: 'Win Real Money',
-    description: 'Earn points and exchange them for actual cash prizes',
-    icon: 'attach-money',
-    gradient: ['#8b5cf6', '#ec4899'],
+    title: 'Real Cash Prizes',
+    description: 'Win actual money! Top performers earn real cash prizes and rewards',
+    icon: 'payments',
+    gradient: ['#8b5cf6', '#a855f7'],
   },
   {
     id: '3',
-    title: 'Compete & Win',
-    description: 'Battle your way to the top of the leaderboard and become champion',
-    icon: 'emoji-events',
-    gradient: ['#6366f1', '#8b5cf6'],
+    title: 'Live Leaderboards',
+    description: 'Compete with players worldwide. Track your rank and climb to the top!',
+    icon: 'leaderboard',
+    gradient: ['#a855f7', '#ec4899'],
   },
   {
     id: '4',
-    title: 'Daily Rewards',
-    description: 'Get free credits every day and unlock amazing bonuses',
-    icon: 'redeem',
-    gradient: ['#8b5cf6', '#ec4899'],
+    title: 'Start Playing Free',
+    description: 'Join now and get free credits to start your trivia journey!',
+    icon: 'stars',
+    gradient: ['#ec4899', '#f43f5e'],
   },
 ];
 
@@ -94,8 +94,11 @@ export const WelcomeScreen: React.FC<{ onFinish: () => void }> = ({ onFinish }) 
         <Animated.View style={[styles.iconContainer, { transform: [{ scale }], opacity }]}>
           <LinearGradient colors={item.gradient} style={styles.iconGradient} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}>
             <View style={styles.iconCircle}>
-              <MaterialIcons name={item.icon} size={120} color={theme.colors.white} />
+              <MaterialIcons name={item.icon} size={100} color="#fff" />
             </View>
+            {/* Decorative dots */}
+            <View style={styles.decorativeDot1} />
+            <View style={styles.decorativeDot2} />
           </LinearGradient>
         </Animated.View>
 
@@ -149,7 +152,7 @@ export const WelcomeScreen: React.FC<{ onFinish: () => void }> = ({ onFinish }) 
       {/* Skip Button */}
       {currentIndex < slides.length - 1 && (
         <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-          <Text style={styles.skipText}>Überspringen</Text>
+          <Text style={styles.skipText}>Skip</Text>
         </TouchableOpacity>
       )}
 
@@ -185,7 +188,7 @@ export const WelcomeScreen: React.FC<{ onFinish: () => void }> = ({ onFinish }) 
             fullWidth
             gradient
           >
-            Los geht's!
+            Get Started!
           </Button>
         ) : (
           <Button
@@ -196,7 +199,7 @@ export const WelcomeScreen: React.FC<{ onFinish: () => void }> = ({ onFinish }) 
             icon={<MaterialIcons name="arrow-forward" size={24} color={theme.colors.white} />}
             iconPosition="right"
           >
-            Weiter
+            Next
           </Button>
         )}
       </View>
@@ -233,20 +236,41 @@ const styles = StyleSheet.create({
     marginBottom: theme.spacing[12],
   },
   iconGradient: {
-    width: 240,
-    height: 240,
-    borderRadius: 120,
+    width: 260,
+    height: 260,
+    borderRadius: 130,
     justifyContent: 'center',
     alignItems: 'center',
+    position: 'relative',
     ...theme.shadows.xl,
   },
   iconCircle: {
-    width: 220,
-    height: 220,
-    borderRadius: 110,
-    backgroundColor: 'transparent',
+    width: 240,
+    height: 240,
+    borderRadius: 120,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  decorativeDot1: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#fbbf24',
+    opacity: 0.9,
+  },
+  decorativeDot2: {
+    position: 'absolute',
+    bottom: 30,
+    left: 25,
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: '#fff',
+    opacity: 0.8,
   },
   textContainer: {
     alignItems: 'center',
