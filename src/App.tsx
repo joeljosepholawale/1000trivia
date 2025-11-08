@@ -13,6 +13,7 @@ import {store, persistor} from '@/store';
 import {AppNavigator} from '@/navigation/AppNavigator';
 import {LoadingScreen} from '@/components/LoadingScreen';
 import {AnimatedSplashScreen} from '@/components/SplashScreen';
+import {ErrorBoundary} from '@/components/ErrorBoundary';
 import {ThemeProvider, useTheme} from '@/contexts/ThemeContext';
 import {useNotifications} from '@/hooks/useNotifications';
 import {config} from '@/config';
@@ -88,15 +89,17 @@ const App = () => {
   }
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
-      <Provider store={store}>
-        <PersistGate loading={<LoadingScreen />} persistor={persistor}>
-          <ThemeProvider>
-            <AppContent />
-          </ThemeProvider>
-        </PersistGate>
-      </Provider>
-    </GestureHandlerRootView>
+    <ErrorBoundary>
+      <GestureHandlerRootView style={{flex: 1}}>
+        <Provider store={store}>
+          <PersistGate loading={<LoadingScreen />} persistor={persistor}>
+            <ThemeProvider>
+              <AppContent />
+            </ThemeProvider>
+          </PersistGate>
+        </Provider>
+      </GestureHandlerRootView>
+    </ErrorBoundary>
   );
 };
 
