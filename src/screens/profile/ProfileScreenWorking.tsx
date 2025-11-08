@@ -81,24 +81,27 @@ export const ProfileScreen = () => {
     );
   };
 
+  const handleMenuPress = (id: string) => {
+    switch (id) {
+      case 'account':
+        navigation.navigate('AccountSettings' as never);
+        break;
+      case 'help':
+        navigation.navigate('HelpSupport' as never);
+        break;
+      case 'notifications':
+      case 'privacy':
+        Alert.alert('Coming Soon', 'This feature will be available in the next update!');
+        break;
+    }
+  };
+
   const menuItems = [
     {
       id: 'account',
       icon: 'person',
       title: 'Account Settings',
       subtitle: 'Manage your account details',
-    },
-    {
-      id: 'notifications',
-      icon: 'notifications',
-      title: 'Notifications',
-      subtitle: 'Manage notification preferences',
-    },
-    {
-      id: 'privacy',
-      icon: 'shield',
-      title: 'Privacy & Security',
-      subtitle: 'Password, security settings',
     },
     {
       id: 'help',
@@ -153,7 +156,7 @@ export const ProfileScreen = () => {
             <TouchableOpacity
               key={item.id}
               style={styles.menuItem}
-              onPress={() => Alert.alert(item.title, 'Coming soon!')}
+              onPress={() => handleMenuPress(item.id)}
             >
               <View style={styles.menuIconContainer}>
                 <MaterialIcons name={item.icon as any} size={24} color="#6366f1" />
