@@ -1,45 +1,75 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {LinearGradient} from 'expo-linear-gradient';
 import {MaterialIcons} from '@expo/vector-icons';
 import {useNavigation} from '@react-navigation/native';
+import {apiClient} from '@/services/api/client';
 
 export const GameModeSelection = () => {
   const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+  const [modes, setModes] = useState<any[]>([]);
 
-  const modes = [
-    {
-      id: 'free',
-      name: 'Free Weekly Challenge',
-      description: '1000 questions • $100 prize pool',
-      icon: 'casino',
-      color: '#6366f1',
-      entryFee: 'Free',
-    },
-    {
-      id: 'challenge',
-      name: 'Premium Challenge',
-      description: '1000 questions • $500 prize pool',
-      icon: 'flash-on',
-      color: '#8b5cf6',
-      entryFee: '50 Credits',
-    },
-    {
-      id: 'tournament',
-      name: 'Tournament',
-      description: '1000 questions • $1000 prize pool',
-      icon: 'emoji-events',
-      color: '#ec4899',
-      entryFee: '100 Credits',
-    },
-  ];
+  useEffect(() => {
+    loadGameModes();
+  }, []);
+
+  const loadGameModes = async () => {
+    try {
+      setLoading(true);
+      const response = await apiClient.get('/game-modes');
+      if (response.success && response.data) {
+        setModes(response.data);
+      }
+    } catch (error) {
+      console.error('Failed to load game modes:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getIconForMode = (type: string) => {
+    switch(type?.toLowerCase()) {
+      case 'free': return 'casino';
+      case 'challenge': return 'flash-on';
+      case 'tournament': return 'emoji-events';
+      case 'super_tournament': return 'stars';
+      default: return 'quiz';
+    }
+  };
+
+  const getColorForMode = (type: string) => {
+    switch(type?.toLowerCase()) {
+      case 'free': return '#6366f1';
+      case 'challenge': return '#8b5cf6';
+      case 'tournament': return '#ec4899';
+      case 'super_tournament': return '#f59e0b';
+      default: return '#6366f1';
+    }
+  };
+
+  const handlePlayMode = (mode: any) => {
+    Alert.alert(
+      mode.name,
+      `Entry Fee: ${mode.entryFee === 0 ? 'Free' : mode.entryFee + ' Credits'}\nReady to play?`,
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {
+          text: 'Play Now',
+          onPress: () => navigation.navigate('QuizGameplay' as never, {gameModeId: mode.id} as never),
+        },
+      ]
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
@@ -53,34 +83,48 @@ export const GameModeSelection = () => {
 
       <ScrollView>
         <View style={styles.content}>
-          {modes.map((mode) => (
-            <TouchableOpacity
-              key={mode.id}
-              style={styles.modeCard}
-              onPress={() => {}}
-            >
-              <LinearGradient
-                colors={[mode.color, mode.color + '99']}
-                style={styles.modeGradient}
-                start={{x: 0, y: 0}}
-                end={{x: 1, y: 1}}
-              >
-                <View style={styles.modeIcon}>
-                  <MaterialIcons name={mode.icon as any} size={40} color="#fff" />
-                </View>
-                <Text style={styles.modeName}>{mode.name}</Text>
-                <Text style={styles.modeDescription}>{mode.description}</Text>
-                <View style={styles.entryFeeContainer}>
-                  <Text style={styles.entryFeeLabel}>Entry Fee:</Text>
-                  <Text style={styles.entryFeeValue}>{mode.entryFee}</Text>
-                </View>
-                <View style={styles.playButton}>
-                  <Text style={styles.playButtonText}>Play Now</Text>
-                  <MaterialIcons name="arrow-forward" size={20} color="#fff" />
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
-          ))}
+          {loading ? (
+            <ActivityIndicator size="large" color="#6366f1" style={{marginVertical: 40}} />
+          ) : modes.length > 0 ? (
+            modes.map((mode) => {
+              const color = getColorForMode(mode.type);
+              const icon = getIconForMode(mode.type);
+              return (
+                <TouchableOpacity
+                  key={mode.id}
+                  style={styles.modeCard}
+                  onPress={() => handlePlayMode(mode)}
+                >
+                  <LinearGradient
+                    colors={[color, color + '99']}
+                    style={styles.modeGradient}
+                    start={{x: 0, y: 0}}
+                    end={{x: 1, y: 1}}
+                  >
+                    <View style={styles.modeIcon}>
+                      <MaterialIcons name={icon as any} size={40} color="#fff" />
+                    </View>
+                    <Text style={styles.modeName}>{mode.name}</Text>
+                    <Text style={styles.modeDescription}>
+                      {mode.description || `Prize pool: ${mode.prizePool || 0} credits`}
+                    </Text>
+                    <View style={styles.entryFeeContainer}>
+                      <Text style={styles.entryFeeLabel}>Entry Fee:</Text>
+                      <Text style={styles.entryFeeValue}>
+                        {mode.entryFee === 0 ? 'Free' : `${mode.entryFee} Credits`}
+                      </Text>
+                    </View>
+                    <View style={styles.playButton}>
+                      <Text style={styles.playButtonText}>Play Now</Text>
+                      <MaterialIcons name="arrow-forward" size={20} color="#fff" />
+                    </View>
+                  </LinearGradient>
+                </TouchableOpacity>
+              );
+            })
+          ) : (
+            <Text style={styles.emptyText}>No game modes available</Text>
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -169,5 +213,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#fff',
     marginRight: 8,
+  },
+  emptyText: {
+    textAlign: 'center',
+    color: '#9ca3af',
+    fontSize: 14,
+    marginVertical: 40,
   },
 });

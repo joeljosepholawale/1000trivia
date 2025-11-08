@@ -2,9 +2,13 @@ import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import {GameModeSelection} from '@/screens/game/GameModeSelectionSimple';
+import {QuizGameplayScreen} from '@/screens/game/QuizGameplayScreen';
 
 export type GameStackParamList = {
   GameModeSelection: undefined;
+  QuizGameplay: {
+    gameModeId: string;
+  };
   Gameplay: {
     sessionId: string;
     modeId: string;
@@ -27,6 +31,7 @@ export const GameNavigator = () => {
       initialRouteName="GameModeSelection"
     >
       <Stack.Screen name="GameModeSelection" component={GameModeSelection} />
+      <Stack.Screen name="QuizGameplay" component={QuizGameplayScreen} />
     </Stack.Navigator>
   );
 };
