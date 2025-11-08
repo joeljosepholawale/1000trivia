@@ -20,6 +20,7 @@ import {AuthStackParamList} from '@/navigation/AuthNavigator';
 import {RootState, AppDispatch} from '@/store';
 import {loginWithEmail, clearError} from '@/store/slices/authSlice';
 import {LoadingScreen} from '@/components/LoadingScreen';
+import {Fonts} from '@/styles/fonts';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
@@ -222,12 +223,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 32,
-    fontWeight: 'bold',
+    fontFamily: Fonts.bold,
     color: '#fff',
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
+    fontFamily: Fonts.regular,
     color: 'rgba(255, 255, 255, 0.8)',
   },
   formContainer: {
@@ -245,7 +247,7 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: Fonts.semiBold,
     color: '#374151',
     marginBottom: 8,
   },
@@ -265,6 +267,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
+    fontFamily: Fonts.regular,
     color: '#111827',
   },
   eyeButton: {
@@ -286,7 +289,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: Fonts.semiBold,
     marginRight: 8,
   },
   footer: {
@@ -297,11 +300,12 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 14,
+    fontFamily: Fonts.regular,
     color: '#6b7280',
   },
   link: {
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: Fonts.semiBold,
     color: '#6366f1',
   },
 });

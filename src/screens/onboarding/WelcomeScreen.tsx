@@ -14,6 +14,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { theme } from '@/styles/theme';
 import { Button } from '@/components/common/Button';
+import { Fonts } from '@/styles/fonts';
 
 const { width } = Dimensions.get('window');
 
@@ -219,7 +220,7 @@ const styles = StyleSheet.create({
   skipText: {
     fontSize: theme.typography.fontSize.base,
     color: theme.colors.text.secondary,
-    fontWeight: theme.typography.fontWeight.semibold,
+    fontFamily: Fonts.semiBold,
   },
   slide: {
     width,
@@ -252,7 +253,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: theme.typography.fontSize['3xl'],
-    fontWeight: theme.typography.fontWeight.bold,
+    fontFamily: Fonts.bold,
     color: theme.colors.text.primary,
     textAlign: 'center',
     marginBottom: theme.spacing[4],
@@ -260,6 +261,7 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: theme.typography.fontSize.lg,
+    fontFamily: Fonts.regular,
     color: theme.colors.text.secondary,
     textAlign: 'center',
     lineHeight: theme.typography.fontSize.lg * 1.5,
