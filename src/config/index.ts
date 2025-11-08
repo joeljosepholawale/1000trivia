@@ -67,7 +67,7 @@ const production: Config = {
   ...development,
   api: {
     baseUrl: 'https://one000trivia.onrender.com/api',
-    timeout: 30000,
+    timeout: 60000, // 60 seconds for Render free tier cold starts
   },
   stripe: {
     publishableKey: 'pk_live_YOUR_LIVE_PUBLISHABLE_KEY_HERE',

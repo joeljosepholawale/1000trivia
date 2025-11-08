@@ -50,6 +50,17 @@ export const LoginScreen = ({navigation}: Props) => {
       return;
     }
 
+    // Show info if server might be waking up
+    setTimeout(() => {
+      if (isLoading) {
+        Alert.alert(
+          'Just a moment...',
+          'Server is waking up (free tier). This usually takes 30-60 seconds on first request.',
+          [{text: 'OK'}]
+        );
+      }
+    }, 5000);
+
     dispatch(loginWithEmail({
       email: email.trim().toLowerCase(),
       password,
