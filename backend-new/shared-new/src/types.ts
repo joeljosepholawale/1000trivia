@@ -294,7 +294,7 @@ export const PasswordSchema = z.string().min(8);
 export const OTPSchema = z.string().length(6);
 
 export const CreateSessionSchema = z.object({
-  periodId: z.string().uuid(),
+  periodId: z.string().min(1), // Allow UUID or period type like 'weekly'
   deviceInfo: z.string().optional(),
 });
 
