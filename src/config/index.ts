@@ -24,8 +24,8 @@ const isDevelopment = __DEV__;
 
 const development: Config = {
   api: {
-    baseUrl: 'http://192.168.1.197:3000/api',
-    timeout: 10000,
+    baseUrl: 'https://one000trivia.onrender.com/api',  // Using production for testing
+    timeout: 60000,  // Longer timeout for Render cold starts
   },
   stripe: {
     publishableKey: 'pk_test_YOUR_TEST_PUBLISHABLE_KEY_HERE',

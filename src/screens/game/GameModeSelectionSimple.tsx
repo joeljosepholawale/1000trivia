@@ -60,7 +60,7 @@ export const GameModeSelection = () => {
   const handlePlayMode = (mode: any) => {
     Alert.alert(
       mode.name,
-      `Entry Fee: ${mode.entryFee === 0 ? 'Free' : mode.entryFee + ' Credits'}\nReady to play?`,
+      `Entry Fee: ${mode.entry_fee === 0 ? 'Free' : mode.entry_fee + ' Credits'}\nReady to play?`,
       [
         {text: 'Cancel', style: 'cancel'},
         {
@@ -111,7 +111,7 @@ export const GameModeSelection = () => {
                     <View style={styles.entryFeeContainer}>
                       <Text style={styles.entryFeeLabel}>Entry Fee:</Text>
                       <Text style={styles.entryFeeValue}>
-                        {mode.entryFee === 0 ? 'Free' : `${mode.entryFee} Credits`}
+                        {mode.entry_fee === 0 ? 'Free' : `${mode.entry_fee} Credits`}
                       </Text>
                     </View>
                     <View style={styles.playButton}>

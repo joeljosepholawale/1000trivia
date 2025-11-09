@@ -15,9 +15,9 @@ import {apiClient} from '@/services/api/client';
 
 type Question = {
   id: string;
-  question: string;
+  text: string;  // Backend returns 'text' not 'question'
   options: string[];
-  correctAnswer: number;
+  correctAnswer?: number;  // May not be sent to client
   timeLimit: number;
 };
 
@@ -67,7 +67,19 @@ export const QuizGameplayScreen = () => {
         gameModeId,
       });
 
+      console.log('Game start response:', JSON.stringify(response, null, 2));
+
       if (response.success && response.data) {
+        console.log('Questions received:', response.data.questions?.length || 0);
+        
+        // Check if questions are available
+        if (!response.data.questions || response.data.questions.length === 0) {
+          console.error('No questions in response!');
+          Alert.alert('Error', 'No questions available. Please try again later.');
+          navigation.goBack();
+          return;
+        }
+        
         setSession({
           sessionId: response.data.sessionId,
           questions: response.data.questions,
@@ -96,24 +108,28 @@ export const QuizGameplayScreen = () => {
   const submitAnswer = async (answerIndex: number | null) => {
     if (!session) return;
 
-    setShowResult(true);
     const currentQuestion = session.questions[session.currentQuestionIndex];
-    const isCorrect = answerIndex === currentQuestion.correctAnswer;
-
-    if (isCorrect) {
-      setCorrectAnswers((prev) => prev + 1);
-      setScore((prev) => prev + 10);
-    }
 
     try {
-      await apiClient.post('/game/answer', {
+      // Submit answer to backend to check if correct
+      const response = await apiClient.post('/game/answer', {
         sessionId: session.sessionId,
         questionId: currentQuestion.id,
-        answer: answerIndex,
+        answer: answerIndex !== null ? currentQuestion.options[answerIndex] : null,
         timeSpent: currentQuestion.timeLimit - timeRemaining,
       });
+
+      setShowResult(true);
+      
+      // Backend tells us if correct
+      if (response.success && response.data?.isCorrect) {
+        setCorrectAnswers((prev) => prev + 1);
+        setScore((prev) => prev + 10);
+      }
     } catch (error) {
       console.error('Failed to submit answer:', error);
+      Alert.alert('Error', 'Failed to submit answer');
+      return;
     }
 
     setTimeout(() => {
@@ -233,7 +249,7 @@ export const QuizGameplayScreen = () => {
 
       {/* Question */}
       <View style={styles.questionContainer}>
-        <Text style={styles.questionText}>{currentQuestion.question}</Text>
+        <Text style={styles.questionText}>{currentQuestion.text}</Text>
       </View>
 
       {/* Answer Options */}
@@ -243,19 +259,16 @@ export const QuizGameplayScreen = () => {
           let borderColor = '#e5e7eb';
           let textColor = '#111827';
 
-          if (showResult) {
-            if (index === currentQuestion.correctAnswer) {
-              backgroundColor = '#dcfce7';
-              borderColor = '#16a34a';
-              textColor = '#16a34a';
-            } else if (index === selectedAnswer) {
-              backgroundColor = '#fee2e2';
-              borderColor = '#dc2626';
-              textColor = '#dc2626';
-            }
-          } else if (index === selectedAnswer) {
+          // Highlight selected answer
+          if (index === selectedAnswer && !showResult) {
             backgroundColor = '#ede9fe';
             borderColor = '#6366f1';
+          }
+          // After submission, show if selected answer was correct or wrong
+          if (showResult && index === selectedAnswer) {
+            // We'll update this when we get the result from backend
+            backgroundColor = '#f3f4f6';  // Gray for now
+            borderColor = '#9ca3af';
           }
 
           return (
@@ -277,12 +290,6 @@ export const QuizGameplayScreen = () => {
                 <Text style={[styles.optionText, {color: textColor}]}>
                   {option}
                 </Text>
-                {showResult && index === currentQuestion.correctAnswer && (
-                  <MaterialIcons name="check-circle" size={24} color="#16a34a" />
-                )}
-                {showResult && index === selectedAnswer && index !== currentQuestion.correctAnswer && (
-                  <MaterialIcons name="cancel" size={24} color="#dc2626" />
-                )}
               </View>
             </TouchableOpacity>
           );

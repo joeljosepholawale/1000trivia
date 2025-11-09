@@ -1,7 +1,9 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import {GameModeSelection} from '@/screens/game/GameModeSelectionSimple';
+import {GameModeSelectionWrapper} from '@/screens/game/GameModeSelectionWrapper';
+import {ModernGameplayScreenContainer} from '@/screens/game/ModernGameplayScreenContainer';
+import {ModernGameResultsScreenContainer} from '@/screens/game/ModernGameResultsScreenContainer';
 import {QuizGameplayScreen} from '@/screens/game/QuizGameplayScreen';
 
 export type GameStackParamList = {
@@ -30,7 +32,9 @@ export const GameNavigator = () => {
       }}
       initialRouteName="GameModeSelection"
     >
-      <Stack.Screen name="GameModeSelection" component={GameModeSelection} />
+      <Stack.Screen name="GameModeSelection" component={GameModeSelectionWrapper} />
+      <Stack.Screen name="Gameplay" component={ModernGameplayScreenContainer} />
+      <Stack.Screen name="GameResults" component={ModernGameResultsScreenContainer} />
       <Stack.Screen name="QuizGameplay" component={QuizGameplayScreen} />
     </Stack.Navigator>
   );
