@@ -1,0 +1,137 @@
+[
+  {
+    "id": "custom_free_001",
+    "username": "QuizMaster99",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=QuizMaster99&background=4CAF50&color=fff",
+    "joinDate": "2024-06-15T10:30:00Z",
+    "lastActive": "2025-01-05T18:45:00Z"
+  },
+  {
+    "id": "custom_free_002",
+    "username": "BrainBox2024",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=BrainBox2024&background=2196F3&color=fff",
+    "joinDate": "2024-07-02T14:20:00Z",
+    "lastActive": "2025-01-05T19:30:00Z"
+  },
+  {
+    "id": "custom_free_003",
+    "username": "TriviaKing",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=TriviaKing&background=FF9800&color=fff",
+    "joinDate": "2024-06-28T09:15:00Z",
+    "lastActive": "2025-01-05T20:10:00Z"
+  },
+  {
+    "id": "custom_free_004",
+    "username": "SmartPanda",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=SmartPanda&background=9C27B0&color=fff",
+    "joinDate": "2024-07-10T16:40:00Z",
+    "lastActive": "2025-01-05T17:25:00Z"
+  },
+  {
+    "id": "custom_free_005",
+    "username": "KnowledgeNinja",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=KnowledgeNinja&background=F44336&color=fff",
+    "joinDate": "2024-08-05T11:50:00Z",
+    "lastActive": "2025-01-05T21:00:00Z"
+  },
+  {
+    "id": "custom_free_006",
+    "username": "FactFinder",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=FactFinder&background=00BCD4&color=fff",
+    "joinDate": "2024-07-18T13:30:00Z",
+    "lastActive": "2025-01-05T16:45:00Z"
+  },
+  {
+    "id": "custom_free_007",
+    "username": "ProQuizzer",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=ProQuizzer&background=8BC34A&color=fff",
+    "joinDate": "2024-08-12T08:20:00Z",
+    "lastActive": "2025-01-05T19:55:00Z"
+  },
+  {
+    "id": "custom_free_008",
+    "username": "WisdomWarrior",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=WisdomWarrior&background=FF5722&color=fff",
+    "joinDate": "2024-06-22T15:10:00Z",
+    "lastActive": "2025-01-05T18:20:00Z"
+  },
+  {
+    "id": "custom_free_009",
+    "username": "ThinkTank",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=ThinkTank&background=3F51B5&color=fff",
+    "joinDate": "2024-09-01T12:45:00Z",
+    "lastActive": "2025-01-05T20:35:00Z"
+  },
+  {
+    "id": "custom_free_010",
+    "username": "GenieusGenius",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=GenieusGenius&background=E91E63&color=fff",
+    "joinDate": "2024-07-25T10:05:00Z",
+    "lastActive": "2025-01-05T17:50:00Z"
+  },
+  {
+    "id": "custom_free_011",
+    "username": "MindMaven",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=MindMaven&background=009688&color=fff",
+    "joinDate": "2024-08-20T14:55:00Z",
+    "lastActive": "2025-01-05T21:15:00Z"
+  },
+  {
+    "id": "custom_free_012",
+    "username": "QuestionQueen",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=QuestionQueen&background=CDDC39&color=000",
+    "joinDate": "2024-06-30T09:40:00Z",
+    "lastActive": "2025-01-05T19:05:00Z"
+  },
+  {
+    "id": "custom_free_013",
+    "username": "AnswerAce",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=AnswerAce&background=607D8B&color=fff",
+    "joinDate": "2024-09-08T16:25:00Z",
+    "lastActive": "2025-01-05T18:40:00Z"
+  },
+  {
+    "id": "custom_free_014",
+    "username": "LogicLegend",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=LogicLegend&background=FF6F00&color=fff",
+    "joinDate": "2024-07-14T11:15:00Z",
+    "lastActive": "2025-01-05T20:50:00Z"
+  },
+  {
+    "id": "custom_free_015",
+    "username": "BrainyBolt",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=BrainyBolt&background=673AB7&color=fff",
+    "joinDate": "2024-08-28T13:00:00Z",
+    "lastActive": "2025-01-05T17:30:00Z"
+  }
+]

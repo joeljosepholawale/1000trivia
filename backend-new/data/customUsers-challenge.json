@@ -1,0 +1,137 @@
+[
+  {
+    "id": "custom_challenge_001",
+    "username": "ChampionMind",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=ChampionMind&background=FFD700&color=000",
+    "joinDate": "2024-06-18T12:30:00Z",
+    "lastActive": "2025-01-05T20:15:00Z"
+  },
+  {
+    "id": "custom_challenge_002",
+    "username": "ChallengerPro",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=ChallengerPro&background=FF6347&color=fff",
+    "joinDate": "2024-07-05T09:45:00Z",
+    "lastActive": "2025-01-05T19:45:00Z"
+  },
+  {
+    "id": "custom_challenge_003",
+    "username": "EliteAnswerer",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=EliteAnswerer&background=1E90FF&color=fff",
+    "joinDate": "2024-06-25T14:10:00Z",
+    "lastActive": "2025-01-05T21:00:00Z"
+  },
+  {
+    "id": "custom_challenge_004",
+    "username": "MastermindX",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=MastermindX&background=8B008B&color=fff",
+    "joinDate": "2024-07-12T16:50:00Z",
+    "lastActive": "2025-01-05T18:30:00Z"
+  },
+  {
+    "id": "custom_challenge_005",
+    "username": "VictoryVault",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=VictoryVault&background=32CD32&color=000",
+    "joinDate": "2024-08-08T11:20:00Z",
+    "lastActive": "2025-01-05T20:45:00Z"
+  },
+  {
+    "id": "custom_challenge_006",
+    "username": "BattleGenius",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=BattleGenius&background=FF1493&color=fff",
+    "joinDate": "2024-07-20T13:35:00Z",
+    "lastActive": "2025-01-05T17:55:00Z"
+  },
+  {
+    "id": "custom_challenge_007",
+    "username": "ContenderOne",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=ContenderOne&background=FF8C00&color=fff",
+    "joinDate": "2024-08-15T08:25:00Z",
+    "lastActive": "2025-01-05T19:20:00Z"
+  },
+  {
+    "id": "custom_challenge_008",
+    "username": "StrategyStar",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=StrategyStar&background=4169E1&color=fff",
+    "joinDate": "2024-06-29T15:15:00Z",
+    "lastActive": "2025-01-05T21:30:00Z"
+  },
+  {
+    "id": "custom_challenge_009",
+    "username": "CompetitorMax",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=CompetitorMax&background=DC143C&color=fff",
+    "joinDate": "2024-09-02T12:40:00Z",
+    "lastActive": "2025-01-05T18:10:00Z"
+  },
+  {
+    "id": "custom_challenge_010",
+    "username": "TriumphTitan",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=TriumphTitan&background=FF69B4&color=fff",
+    "joinDate": "2024-07-27T10:55:00Z",
+    "lastActive": "2025-01-05T20:00:00Z"
+  },
+  {
+    "id": "custom_challenge_011",
+    "username": "PowerPlayer88",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=PowerPlayer88&background=00CED1&color=fff",
+    "joinDate": "2024-08-22T14:00:00Z",
+    "lastActive": "2025-01-05T19:35:00Z"
+  },
+  {
+    "id": "custom_challenge_012",
+    "username": "RivalRanger",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=RivalRanger&background=9ACD32&color=000",
+    "joinDate": "2024-07-03T09:30:00Z",
+    "lastActive": "2025-01-05T21:10:00Z"
+  },
+  {
+    "id": "custom_challenge_013",
+    "username": "AmbitionAce",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=AmbitionAce&background=708090&color=fff",
+    "joinDate": "2024-09-10T16:45:00Z",
+    "lastActive": "2025-01-05T18:50:00Z"
+  },
+  {
+    "id": "custom_challenge_014",
+    "username": "LegendSeeker",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=LegendSeeker&background=B8860B&color=fff",
+    "joinDate": "2024-07-16T11:10:00Z",
+    "lastActive": "2025-01-05T20:25:00Z"
+  },
+  {
+    "id": "custom_challenge_015",
+    "username": "DominatorX",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=DominatorX&background=800080&color=fff",
+    "joinDate": "2024-08-30T13:20:00Z",
+    "lastActive": "2025-01-05T17:40:00Z"
+  }
+]

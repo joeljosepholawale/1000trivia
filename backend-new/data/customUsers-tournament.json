@@ -1,0 +1,137 @@
+[
+  {
+    "id": "custom_tournament_001",
+    "username": "TourneyChamp",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=TourneyChamp&background=C0C0C0&color=000",
+    "joinDate": "2024-06-20T11:30:00Z",
+    "lastActive": "2025-01-05T19:25:00Z"
+  },
+  {
+    "id": "custom_tournament_002",
+    "username": "ProLeagueGuru",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=ProLeagueGuru&background=CD7F32&color=fff",
+    "joinDate": "2024-07-07T10:15:00Z",
+    "lastActive": "2025-01-05T20:40:00Z"
+  },
+  {
+    "id": "custom_tournament_003",
+    "username": "EliteTactician",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=EliteTactician&background=00008B&color=fff",
+    "joinDate": "2024-06-27T13:50:00Z",
+    "lastActive": "2025-01-05T18:15:00Z"
+  },
+  {
+    "id": "custom_tournament_004",
+    "username": "GrandMaster2024",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=GrandMaster2024&background=8B0000&color=fff",
+    "joinDate": "2024-07-14T15:20:00Z",
+    "lastActive": "2025-01-05T21:05:00Z"
+  },
+  {
+    "id": "custom_tournament_005",
+    "username": "UltraCompetitor",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=UltraCompetitor&background=006400&color=fff",
+    "joinDate": "2024-08-10T09:40:00Z",
+    "lastActive": "2025-01-05T19:50:00Z"
+  },
+  {
+    "id": "custom_tournament_006",
+    "username": "VictoryHunter",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=VictoryHunter&background=8B4513&color=fff",
+    "joinDate": "2024-07-22T12:05:00Z",
+    "lastActive": "2025-01-05T20:30:00Z"
+  },
+  {
+    "id": "custom_tournament_007",
+    "username": "ChampionLeague",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=ChampionLeague&background=FF4500&color=fff",
+    "joinDate": "2024-08-17T14:30:00Z",
+    "lastActive": "2025-01-05T17:45:00Z"
+  },
+  {
+    "id": "custom_tournament_008",
+    "username": "TitanWarrior",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=TitanWarrior&background=191970&color=fff",
+    "joinDate": "2024-07-01T16:55:00Z",
+    "lastActive": "2025-01-05T21:20:00Z"
+  },
+  {
+    "id": "custom_tournament_009",
+    "username": "ApexPlayer",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=ApexPlayer&background=8B008B&color=fff",
+    "joinDate": "2024-09-04T11:25:00Z",
+    "lastActive": "2025-01-05T18:55:00Z"
+  },
+  {
+    "id": "custom_tournament_010",
+    "username": "LegendaryMind",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=LegendaryMind&background=DAA520&color=000",
+    "joinDate": "2024-07-29T09:10:00Z",
+    "lastActive": "2025-01-05T20:10:00Z"
+  },
+  {
+    "id": "custom_tournament_011",
+    "username": "SupremeStrategist",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=SupremeStrategist&background=556B2F&color=fff",
+    "joinDate": "2024-08-24T13:45:00Z",
+    "lastActive": "2025-01-05T19:35:00Z"
+  },
+  {
+    "id": "custom_tournament_012",
+    "username": "PremierConqueror",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=PremierConqueror&background=2F4F4F&color=fff",
+    "joinDate": "2024-07-05T10:20:00Z",
+    "lastActive": "2025-01-05T21:00:00Z"
+  },
+  {
+    "id": "custom_tournament_013",
+    "username": "RoyalIntellect",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=RoyalIntellect&background=483D8B&color=fff",
+    "joinDate": "2024-09-12T15:50:00Z",
+    "lastActive": "2025-01-05T18:20:00Z"
+  },
+  {
+    "id": "custom_tournament_014",
+    "username": "TopTierGenius",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=TopTierGenius&background=8B4789&color=fff",
+    "joinDate": "2024-07-18T12:35:00Z",
+    "lastActive": "2025-01-05T20:50:00Z"
+  },
+  {
+    "id": "custom_tournament_015",
+    "username": "PlatinumBrain",
+    "points": 0,
+    "questionsAnswered": 0,
+    "avatarUrl": "https://ui-avatars.com/api/?name=PlatinumBrain&background=4B0082&color=fff",
+    "joinDate": "2024-09-01T14:15:00Z",
+    "lastActive": "2025-01-05T17:30:00Z"
+  }
+]
