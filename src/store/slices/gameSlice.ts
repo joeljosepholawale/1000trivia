@@ -1,5 +1,6 @@
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import {gameAPI} from '@/services/api/game';
+import {getErrorMessage} from '@/types/errors';
 import type {GameMode, Period, Question, GameSession, GameSessionStatus} from '@1000ravier/shared';
 
 interface GameState {
@@ -57,8 +58,8 @@ export const loadGameModes = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to load game modes');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -72,8 +73,8 @@ export const loadActivePeriods = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to load periods');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -87,8 +88,8 @@ export const joinGameMode = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to join game');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -102,8 +103,8 @@ export const getNextQuestion = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to get question');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -122,8 +123,8 @@ export const submitAnswer = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to submit answer');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -137,8 +138,8 @@ export const pauseSession = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to pause session');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -152,8 +153,8 @@ export const resumeSession = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to resume session');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -167,8 +168,8 @@ export const endSession = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to end session');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );

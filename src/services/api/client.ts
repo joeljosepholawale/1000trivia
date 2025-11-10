@@ -2,6 +2,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import {config} from '@/config';
 import type {ApiResponse} from '@1000ravier/shared';
+import type {AppError} from '@/types/errors';
+import {isApiError, getErrorMessage} from '@/types/errors';
 
 class ApiClient {
   private baseURL: string;
@@ -217,8 +219,10 @@ class ApiClient {
       }
 
       return responseData;
-    } catch (error: any) {
-      if (error.name === 'AbortError') {
+    } catch (error: unknown) {
+      const appError = error as Error;
+      
+      if (appError.name === 'AbortError') {
         return {
           success: false,
           error: {
@@ -232,7 +236,7 @@ class ApiClient {
         success: false,
         error: {
           code: 'NETWORK_ERROR',
-          message: error.message || 'Network request failed'
+          message: getErrorMessage(error, 'Network request failed')
         }
       };
     }

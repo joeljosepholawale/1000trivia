@@ -3,6 +3,7 @@ import {authAPI} from '@/services/api/auth';
 import {apiClient} from '@/services/api/client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type {User} from '@1000ravier/shared';
+import {getErrorMessage} from '@/types/errors';
 
 interface AuthState {
   user: User | null;
@@ -35,8 +36,8 @@ export const register = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Registration failed');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -50,8 +51,8 @@ export const loginWithEmail = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Login failed');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -65,8 +66,8 @@ export const verifyOTP = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Invalid OTP');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -90,8 +91,8 @@ export const refreshToken = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Token refresh failed');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -106,7 +107,7 @@ export const logout = createAsyncThunk(
       await AsyncStorage.removeItem('refresh_token');
       await apiClient.clearToken();
       return;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Even if logout fails on server, we should still clear local state
       await AsyncStorage.removeItem('auth_token');
       await AsyncStorage.removeItem('refresh_token');
@@ -141,8 +142,8 @@ export const checkStoredAuth = createAsyncThunk(
         user: response.data,
         token,
       };
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to restore session');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Failed to restore session'));
     }
   }
 );
@@ -172,7 +173,7 @@ const authSlice = createSlice({
       .addCase(checkStoredAuth.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isAuthenticated = true;
-        state.user = action.payload.user as any;
+        state.user = action.payload.user as unknown as User;
         state.token = action.payload.token;
       })
       .addCase(checkStoredAuth.rejected, (state) => {

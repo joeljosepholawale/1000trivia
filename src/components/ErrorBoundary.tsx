@@ -35,7 +35,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    // Log error to error reporting service (e.g., Sentry)
+    // Log error to console for debugging
     console.error('Error caught by boundary:', error, errorInfo);
     
     this.setState({
@@ -46,7 +46,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     // Call custom error handler if provided
     this.props.onError?.(error, errorInfo);
 
-    // TODO: Send to error tracking service
+    // Note: Sentry integration can be enabled here when setting up error tracking
     // Sentry.captureException(error, { extra: errorInfo });
   }
 

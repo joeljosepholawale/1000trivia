@@ -1,5 +1,6 @@
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import {adsService} from '../../services/ads/adsService';
+import {getErrorMessage} from '@/types/errors';
 
 interface AdsState {
   // Ad availability
@@ -61,8 +62,8 @@ export const initializeAds = createAsyncThunk(
         rewardedAdReady: adsService.isRewardedAdReady(),
         interstitialAdReady: adsService.isInterstitialAdReady(),
       };
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to initialize ads');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Failed to initialize ads'));
     }
   }
 );
@@ -73,8 +74,8 @@ export const loadRewardedAd = createAsyncThunk(
     try {
       await adsService.loadRewardedAd();
       return true;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to load rewarded ad');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Failed to load rewarded ad'));
     }
   }
 );
@@ -85,8 +86,8 @@ export const loadInterstitialAd = createAsyncThunk(
     try {
       await adsService.loadInterstitialAd();
       return true;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to load interstitial ad');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Failed to load interstitial ad'));
     }
   }
 );
@@ -116,8 +117,8 @@ export const showRewardedAd = createAsyncThunk(
       }
       
       return true;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to show rewarded ad');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Failed to show rewarded ad'));
     }
   }
 );
@@ -142,8 +143,8 @@ export const showInterstitialAd = createAsyncThunk(
       }
       
       return true;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to show interstitial ad');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Failed to show interstitial ad'));
     }
   }
 );
@@ -162,8 +163,8 @@ export const claimAdReward = createAsyncThunk(
         credits: result.credits,
         adType,
       };
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to claim ad reward');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Failed to claim ad reward'));
     }
   }
 );

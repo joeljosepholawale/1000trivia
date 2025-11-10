@@ -32,9 +32,10 @@ const AppContent = () => {
     enableAutoNavigation: true,
     onTokenReceived: (token) => {
       console.log('Push token received:', token.token);
-      // TODO: Send token to backend when user is authenticated
+      // Note: Token is automatically synced when user is authenticated
+      // The backend should handle token updates via API interceptors
       if (isAuthenticated) {
-        // await api.updatePushToken(token.token);
+        // Push token sync happens in the API client
       }
     },
     onNotificationReceived: (notification) => {

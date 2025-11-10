@@ -5,6 +5,7 @@
 
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { userAPI, UserStats, UserAchievement, UserProfile, ProfileUpdateData } from '@/services/api/user';
+import { getErrorMessage } from '@/types/errors';
 
 export interface UserState {
   stats: UserStats | null;
@@ -31,8 +32,8 @@ export const loadUserStats = createAsyncThunk(
     try {
       const stats = await userAPI.getStats();
       return stats;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to load user stats');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Failed to load user stats'));
     }
   }
 );
@@ -43,8 +44,8 @@ export const loadUserAchievements = createAsyncThunk(
     try {
       const achievements = await userAPI.getAchievements();
       return achievements;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to load achievements');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Failed to load achievements'));
     }
   }
 );
@@ -55,8 +56,8 @@ export const loadUserProfile = createAsyncThunk(
     try {
       const profile = await userAPI.getProfile();
       return profile;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to load user profile');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Failed to load user profile'));
     }
   }
 );
@@ -69,8 +70,8 @@ export const updateUserProfile = createAsyncThunk(
       // Reload profile after update
       const profile = await userAPI.getProfile();
       return profile;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Failed to update profile');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Failed to update profile'));
     }
   }
 );

@@ -1,5 +1,6 @@
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import {walletAPI} from '@/services/api/wallet';
+import {getErrorMessage} from '@/types/errors';
 import type {WalletTransaction, CreditsBundle} from '@1000ravier/shared';
 
 interface WalletState {
@@ -51,8 +52,8 @@ export const loadWalletInfo = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to load wallet info');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -66,8 +67,8 @@ export const claimDailyCredits = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to claim daily credits');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -81,8 +82,8 @@ export const claimAdReward = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to claim ad reward');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -96,8 +97,8 @@ export const loadTransactions = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to load transactions');
       }
       return {transactions: response.data, offset};
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -111,8 +112,8 @@ export const loadCreditBundles = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to load credit bundles');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -126,8 +127,8 @@ export const requestRefund = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to request refund');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );

@@ -421,12 +421,28 @@ export class DatabaseService {
 
   async createSessionQuestions(sessionId: string, questions: any[]) {
     try {
-      const sessionQuestions = questions.map((question, index) => ({
-        session_id: sessionId,
-        question_id: question.id,
-        question_index: index,
-        randomized_options: question.options.sort(() => 0.5 - Math.random())
-      }));
+      const sessionQuestions = questions.map((question, index) => {
+        // Ensure options is an array (handle both JSON string and array)
+        let options = question.options;
+        if (typeof options === 'string') {
+          try {
+            options = JSON.parse(options);
+          } catch (e) {
+            this.logger.error('Failed to parse options:', e);
+            options = [];
+          }
+        }
+        if (!Array.isArray(options)) {
+          options = [];
+        }
+        
+        return {
+          session_id: sessionId,
+          question_id: question.id,
+          question_index: index,
+          randomized_options: [...options].sort(() => 0.5 - Math.random())
+        };
+      });
 
       const { data, error } = await this.supabase
         .from('session_questions')

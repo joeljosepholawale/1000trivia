@@ -23,12 +23,17 @@ export const ProfileScreenContainer = () => {
 
   const loadProfileData = async () => {
     try {
-      await Promise.all([
+      const results = await Promise.all([
         dispatch(loadUserProfile()),
         dispatch(loadUserAchievements()),
       ]);
+      
+      if (!results[0] || !results[1]) {
+        console.warn('Some profile data failed to load');
+      }
     } catch (error) {
       console.error('Failed to load profile data:', error);
+      // Continue with default/empty values
     }
   };
 
@@ -60,8 +65,8 @@ export const ProfileScreenContainer = () => {
     creditsEarned: stats?.creditsEarned || balance || 0,
   };
 
-  // Map achievements with proper types
-  const achievementsData = achievements.map(achievement => ({
+  // Map achievements with proper types and null safety
+  const achievementsData = (achievements || []).map(achievement => ({
     id: achievement.id,
     title: achievement.title,
     description: achievement.description,
@@ -80,8 +85,10 @@ export const ProfileScreenContainer = () => {
     try {
       await dispatch(updateUserProfile(updates)).unwrap();
       setIsEditModalVisible(false);
+      Alert.alert('Success', 'Profile updated successfully');
     } catch (error: any) {
-      throw new Error(error || 'Failed to update profile');
+      const errorMessage = typeof error === 'string' ? error : error?.message || 'Failed to update profile';
+      Alert.alert('Error', errorMessage);
     }
   };
 

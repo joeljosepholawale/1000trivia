@@ -1,5 +1,6 @@
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import {leaderboardAPI} from '@/services/api/leaderboard';
+import {getErrorMessage} from '@/types/errors';
 import type {LeaderboardEntry, Winner, Period} from '@1000ravier/shared';
 
 interface LeaderboardState {
@@ -56,8 +57,8 @@ export const loadLeaderboard = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to load leaderboard');
       }
       return {leaderboard: response.data, periodId};
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -71,8 +72,8 @@ export const loadUserRank = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to load user rank');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -86,8 +87,8 @@ export const loadWinners = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to load winners');
       }
       return {winners: response.data, offset};
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -101,8 +102,8 @@ export const loadRecentWinners = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to load recent winners');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -116,8 +117,8 @@ export const loadPeriods = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to load periods');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -131,8 +132,8 @@ export const loadUserStats = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to load user stats');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
@@ -146,8 +147,8 @@ export const loadPeriodStats = createAsyncThunk(
         return rejectWithValue(response.error?.message || 'Failed to load period stats');
       }
       return response.data;
-    } catch (error: any) {
-      return rejectWithValue(error.message || 'Network error');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Network error'));
     }
   }
 );
