@@ -31,7 +31,8 @@ export const GameModeSelection = () => {
         setModes(response.data);
       }
     } catch (error) {
-      console.error('Failed to load game modes:', error);
+      // Silently fail - user will see empty state
+      setModes([]);
     } finally {
       setLoading(false);
     }

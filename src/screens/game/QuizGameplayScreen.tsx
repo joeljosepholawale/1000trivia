@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Alert,
   ActivityIndicator,
+  Platform,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {MaterialIcons} from '@expo/vector-icons';
@@ -67,14 +68,9 @@ export const QuizGameplayScreen = () => {
         gameModeId,
       });
 
-      console.log('Game start response:', JSON.stringify(response, null, 2));
-
       if (response.success && response.data) {
-        console.log('Questions received:', response.data.questions?.length || 0);
-        
         // Check if questions are available
         if (!response.data.questions || response.data.questions.length === 0) {
-          console.error('No questions in response!');
           Alert.alert('Error', 'No questions available. Please try again later.');
           navigation.goBack();
           return;
@@ -91,7 +87,7 @@ export const QuizGameplayScreen = () => {
         navigation.goBack();
       }
     } catch (error) {
-      console.error('Failed to start game:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       Alert.alert('Error', 'Failed to start game session');
       navigation.goBack();
     } finally {
@@ -127,7 +123,7 @@ export const QuizGameplayScreen = () => {
         setScore((prev) => prev + 10);
       }
     } catch (error) {
-      console.error('Failed to submit answer:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       Alert.alert('Error', 'Failed to submit answer');
       return;
     }
@@ -171,7 +167,7 @@ export const QuizGameplayScreen = () => {
         );
       }
     } catch (error) {
-      console.error('Failed to complete game:', error);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
       Alert.alert('Error', 'Failed to complete game');
     }
   };
