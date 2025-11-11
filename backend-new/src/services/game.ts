@@ -152,7 +152,10 @@ export class GameService {
         return { success: false, message: 'Not enough questions available' };
       }
 
-      const randomizedQuestions = randomizeQuestions(questions, userId + periodId);
+      this.logger.info(`Fetched ${questions.length} questions, first question:`, JSON.stringify(questions[0]));
+
+      // Skip randomizeQuestions for now - use questions directly
+      const randomizedQuestions = questions; // randomizeQuestions(questions, userId + periodId);
 
       // Create game session
       const session = await db.createGameSession({
