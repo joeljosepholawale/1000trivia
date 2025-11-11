@@ -10,9 +10,9 @@ android/app/build/
 *.apk
 *.aab
 
-# Root workspace files (exclude from mobile builds)
-/package.json
-/package-lock.json
+# Root workspace files
+# /package.json  - DO NOT EXCLUDE, needed for builds
+# /package-lock.json
 
 # Build
 dist/
