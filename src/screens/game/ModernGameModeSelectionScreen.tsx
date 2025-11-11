@@ -198,14 +198,14 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
       'SUPER_TOURNAMENT': 'military-tech',
     };
 
-    const entryFeeDisplay = mode.entry_fee === 0
+    const entryFeeDisplay = !mode.entry_fee || mode.entry_fee === 0
       ? 'Free'
       : mode.entry_fee_currency === 'USD'
       ? `$${mode.entry_fee}`
-      : `${mode.entry_fee.toLocaleString()} Credits`;
+      : `${(mode.entry_fee || 0).toLocaleString()} Credits`;
 
     const prizePoolDisplay = mode.prize_pool
-      ? `$${mode.prize_pool.toLocaleString()}`
+      ? `$${(mode.prize_pool || 0).toLocaleString()}`
       : '$0';
 
     const timeLeft = calculateTimeLeft(period.end_date);
@@ -282,10 +282,12 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
 
   const canJoin = () => {
     const mode = selectedMode;
+    if (!mode) return false;
+    
     // Email verification check removed - all users can play
     
     if (mode.entryFeeCurrency === 'CREDITS') {
-      return userCredits >= mode.entryFeeValue;
+      return userCredits >= (mode.entryFeeValue || 0);
     }
     
     return true; // For USD, assume payment will be handled
@@ -293,11 +295,12 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
 
   const getMissingRequirements = () => {
     const missing: string[] = [];
+    if (!selectedMode) return missing;
     
     // Email verification requirement removed
     
-    if (selectedMode.entryFeeCurrency === 'CREDITS' && userCredits < selectedMode.entryFeeValue) {
-      missing.push(`Need ${selectedMode.entryFeeValue - userCredits} more credits`);
+    if (selectedMode.entryFeeCurrency === 'CREDITS' && userCredits < (selectedMode.entryFeeValue || 0)) {
+      missing.push(`Need ${(selectedMode.entryFeeValue || 0) - userCredits} more credits`);
     }
     
     if (selectedMode.type === 'SUPER_TOURNAMENT' && userLevel < 10) {
@@ -448,83 +451,87 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
       </View>
 
       {/* Details Section */}
-      <View style={styles.detailsSection}>
-        <ScrollView showsVerticalScrollIndicator={false}>
-          {/* Entry Fee */}
-          <View style={styles.detailCard}>
-            <View style={styles.detailRow}>
-              <View style={styles.detailLabel}>
-                <MaterialIcons name="confirmation-number" size={20} color={theme.colors.text.secondary} />
-                <Text style={styles.detailLabelText}>Entry Fee</Text>
+      {selectedMode && (
+        <View style={styles.detailsSection}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {/* Entry Fee */}
+            <View style={styles.detailCard}>
+              <View style={styles.detailRow}>
+                <View style={styles.detailLabel}>
+                  <MaterialIcons name="confirmation-number" size={20} color={theme.colors.text.secondary} />
+                  <Text style={styles.detailLabelText}>Entry Fee</Text>
+                </View>
+                <Badge
+                  variant={(selectedMode.entryFeeValue || 0) === 0 ? 'success' : 'primary'}
+                  size="md"
+                >
+                  {selectedMode.entryFee}
+                </Badge>
               </View>
-              <Badge
-                variant={selectedMode.entryFeeValue === 0 ? 'success' : 'primary'}
-                size="md"
-              >
-                {selectedMode.entryFee}
-              </Badge>
             </View>
-          </View>
 
-          {/* Time Left */}
-          <View style={styles.detailCard}>
-            <View style={styles.detailRow}>
-              <View style={styles.detailLabel}>
-                <MaterialIcons name="access-time" size={20} color={theme.colors.text.secondary} />
-                <Text style={styles.detailLabelText}>Time Remaining</Text>
+            {/* Time Left */}
+            <View style={styles.detailCard}>
+              <View style={styles.detailRow}>
+                <View style={styles.detailLabel}>
+                  <MaterialIcons name="access-time" size={20} color={theme.colors.text.secondary} />
+                  <Text style={styles.detailLabelText}>Time Remaining</Text>
+                </View>
+                <Text style={styles.detailValue}>{selectedMode.timeLeft}</Text>
               </View>
-              <Text style={styles.detailValue}>{selectedMode.timeLeft}</Text>
             </View>
-          </View>
 
-          {/* Requirements */}
-          <View style={styles.detailCard}>
-            <Text style={styles.requirementsTitle}>Requirements:</Text>
-            {selectedMode.requirements.map((req, index) => (
-              <View key={index} style={styles.requirement}>
-                <MaterialIcons name="check-circle" size={18} color={theme.colors.success[500]} />
-                <Text style={styles.requirementText}>{req}</Text>
-              </View>
-            ))}
-          </View>
-
-          {/* Missing Requirements */}
-          {getMissingRequirements().length > 0 && (
-            <View style={[styles.detailCard, styles.warningCard]}>
-              <Text style={styles.warningTitle}>Missing Requirements:</Text>
-              {getMissingRequirements().map((req, index) => (
+            {/* Requirements */}
+            <View style={styles.detailCard}>
+              <Text style={styles.requirementsTitle}>Requirements:</Text>
+              {(selectedMode.requirements || []).map((req, index) => (
                 <View key={index} style={styles.requirement}>
-                  <MaterialIcons name="error" size={18} color={theme.colors.error[500]} />
-                  <Text style={styles.warningText}>{req}</Text>
+                  <MaterialIcons name="check-circle" size={18} color={theme.colors.success[500]} />
+                  <Text style={styles.requirementText}>{req}</Text>
                 </View>
               ))}
             </View>
-          )}
-        </ScrollView>
-      </View>
+
+            {/* Missing Requirements */}
+            {getMissingRequirements().length > 0 && (
+              <View style={[styles.detailCard, styles.warningCard]}>
+                <Text style={styles.warningTitle}>Missing Requirements:</Text>
+                {getMissingRequirements().map((req, index) => (
+                  <View key={index} style={styles.requirement}>
+                    <MaterialIcons name="error" size={18} color={theme.colors.error[500]} />
+                    <Text style={styles.warningText}>{req}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+          </ScrollView>
+        </View>
+      )}
 
       {/* Join Button */}
-      <View style={styles.joinButtonContainer}>
-        <TouchableOpacity
-          onPress={() => onJoinMode(selectedMode.id)}
-          disabled={!canJoin()}
-          activeOpacity={0.9}
-        >
-          <LinearGradient
-            colors={canJoin() ? selectedMode.gradient : [theme.colors.gray[400], theme.colors.gray[500]]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={[styles.joinButton, !canJoin() && styles.joinButtonDisabled]}
+      {selectedMode && (
+        <View style={styles.joinButtonContainer}>
+          <TouchableOpacity
+            onPress={() => onJoinMode(selectedMode.id)}
+            disabled={!canJoin()}
+            activeOpacity={0.9}
           >
-            <Text style={styles.joinButtonText}>
-              {canJoin() ? 'Join Now' : 'Requirements Not Met'}
-            </Text>
-            {canJoin() && (
-              <MaterialIcons name="arrow-forward" size={24} color={theme.colors.white} />
-            )}
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
+            <LinearGradient
+              colors={canJoin() ? selectedMode.gradient : [theme.colors.gray[400], theme.colors.gray[500]]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[styles.joinButton, !canJoin() && styles.joinButtonDisabled]}
+            >
+              <Text style={styles.joinButtonText}>
+                {canJoin() ? 'Join Now' : 'Requirements Not Met'}
+              </Text>
+              {canJoin() && (
+                <MaterialIcons name="arrow-forward" size={24} color={theme.colors.white} />
+              )}
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+      )}
     </SafeAreaView>
   );
 };
