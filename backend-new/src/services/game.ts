@@ -419,6 +419,7 @@ export class GameService {
           isCorrect,
           correctAnswer: isSkipped ? sessionQuestion.question.correct_answer : undefined,
           score: newStats.score,
+          sessionComplete: isCompleted,
           progress: {
             answeredQuestions: newStats.answered_questions,
             totalQuestions: (session as any).total_questions || 100,
