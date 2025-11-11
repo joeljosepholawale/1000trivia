@@ -1,0 +1,48 @@
+# Dependencies
+node_modules/
+.expo/
+.expo-shared/
+
+# Android/Gradle
+android/.gradle/
+android/build/
+android/app/build/
+*.apk
+*.aab
+
+# Root workspace files (exclude from mobile builds)
+/package.json
+/package-lock.json
+
+# Build
+dist/
+build/
+*.apk
+*.aab
+*.ipa
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Temporary
+*.log
+*.tmp
+.cache/
