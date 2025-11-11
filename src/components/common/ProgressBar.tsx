@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Animated, ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { theme } from '@/styles/theme';
 
-interface ProgressBarProps {
+export interface ProgressBarProps {
   progress: number; // 0-100
   height?: number;
   color?: string;

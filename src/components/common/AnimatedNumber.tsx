@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Text, Animated, Easing, TextStyle } from 'react-native';
 
-interface AnimatedNumberProps {
+export interface AnimatedNumberProps {
   value: number;
   duration?: number;
   suffix?: string;

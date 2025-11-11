@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { theme } from '@/styles/theme';
 import { Card } from './Card';
 
-interface StatsCardProps {
+export interface StatsCardProps {
   label: string;
   value: string | number;
   icon: keyof typeof MaterialIcons.glyphMap;
@@ -51,7 +51,7 @@ export const StatsCard: React.FC<StatsCardProps> = ({
   };
 
   return (
-    <Card variant="elevated" padding={4} style={[styles.card, style]}>
+    <Card variant="default" elevated padding={20} style={[styles.card, style]}>
       <View style={styles.content}>
         <View style={styles.iconContainer}>
           {gradient ? (

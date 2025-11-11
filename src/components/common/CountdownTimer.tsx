@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Animated } from 'react-native';
 import { Svg, Circle } from 'react-native-svg';
 import { theme } from '@/styles/theme';
 
-interface CountdownTimerProps {
+export interface CountdownTimerProps {
   seconds: number;
   size?: number;
   color?: string;

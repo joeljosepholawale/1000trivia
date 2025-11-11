@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { theme } from '@/styles/theme';
 
-interface BadgeProps {
+export interface BadgeProps {
   children: React.ReactNode;
   variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'info' | 'neutral';
   size?: 'sm' | 'md' | 'lg';

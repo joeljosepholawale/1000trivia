@@ -3,7 +3,7 @@ import {View, StyleSheet, ViewStyle, TouchableOpacity} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import {colors} from '@/styles/colors';
 
-interface CardProps {
+export interface CardProps {
   children: React.ReactNode;
   style?: ViewStyle;
   gradient?: boolean;
@@ -14,7 +14,7 @@ interface CardProps {
   padding?: number;
 }
 
-export const Card: React.FC<CardProps> = ({
+export const Card: React.FC<CardProps>
   children,
   style,
   gradient = false,
