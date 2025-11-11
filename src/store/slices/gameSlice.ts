@@ -1,7 +1,7 @@
 import {createSlice, createAsyncThunk, PayloadAction} from '@reduxjs/toolkit';
 import {gameAPI} from '@/services/api/game';
 import {getErrorMessage} from '@/types/errors';
-import type {GameMode, Period, Question, GameSession, GameSessionStatus} from '@1000ravier/shared';
+import type {GameMode, Period, Question, GameSession, SessionStatus} from '@1000ravier/shared';
 
 interface GameState {
   // Available game modes and periods

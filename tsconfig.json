@@ -11,7 +11,7 @@
       "@/types/*": ["./types/*"],
       "@/utils/*": ["./utils/*"],
       "@/assets/*": ["../assets/*"],
-      "@1000ravier/shared": ["../shared/src"]
+      "@1000ravier/shared": ["../backend-new/shared-new/src"]
     },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,

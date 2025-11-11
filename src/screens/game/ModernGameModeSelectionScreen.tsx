@@ -198,20 +198,20 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
       'SUPER_TOURNAMENT': 'military-tech',
     };
 
-    const entryFeeDisplay = !mode.entry_fee || mode.entry_fee === 0
+    const entryFeeDisplay = !mode.entryFee || mode.entryFee === 0
       ? 'Free'
-      : mode.entry_fee_currency === 'USD'
-      ? `$${mode.entry_fee}`
-      : `${(mode.entry_fee || 0).toLocaleString()} Credits`;
+      : mode.entryFeeCurrency === 'USD'
+      ? `$${mode.entryFee}`
+      : `${(mode.entryFee || 0).toLocaleString()} Credits`;
 
-    const prizePoolDisplay = mode.prize_pool
-      ? `$${(mode.prize_pool || 0).toLocaleString()}`
+    const prizePoolDisplay = mode.payout
+      ? `$${(mode.payout || 0).toLocaleString()}`
       : '$0';
 
-    const timeLeft = calculateTimeLeft(period.end_date);
+    const timeLeft = calculateTimeLeft(period.endDate);
 
     const requirements: string[] = [];
-    if (mode.entry_fee > 0) {
+    if (mode.entryFee > 0) {
       requirements.push(entryFeeDisplay);
     }
     if (mode.type === 'SUPER_TOURNAMENT') {
@@ -221,17 +221,17 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
     return {
       id: period.id,
       type: typeMap[mode.type] || 'FREE',
-      name: mode.display_name || mode.name,
+      name: mode.name,
       subtitle: getSubtitle(mode.type),
       questions: mode.questions,
       entryFee: entryFeeDisplay,
-      entryFeeValue: mode.entry_fee,
-      entryFeeCurrency: mode.entry_fee_currency,
+      entryFeeValue: mode.entryFee,
+      entryFeeCurrency: mode.entryFeeCurrency,
       prizePool: prizePoolDisplay,
       gradient: gradientMap[mode.type] || gradientMap['FREE'],
       icon: iconMap[mode.type] || 'play-circle-filled',
-      participants: period.participants_count || 0,
-      maxParticipants: period.max_participants || 10000,
+      participants: period.totalParticipants || 0,
+      maxParticipants: 10000,
       timeLeft,
       requirements,
       featured: index === 0,
