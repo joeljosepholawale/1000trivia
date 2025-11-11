@@ -353,10 +353,10 @@ export class GameService {
       // Check if answer is correct
       const isCorrect = !isSkipped && selectedAnswer === sessionQuestion.question.correct_answer;
 
-      // Submit answer
+      // Submit answer - use the actual question ID, not sessionQuestionId
       await db.submitAnswer({
         sessionId,
-        questionId,
+        questionId: sessionQuestion.question_id, // Use question_id from session_questions, not the input questionId
         selectedAnswer: isSkipped ? undefined : selectedAnswer,
         isCorrect,
         isSkipped,
