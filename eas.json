@@ -1,7 +1,6 @@
 {
   "cli": {
-    "version": ">= 13.4.3",
-    "appVersionSource": "remote"
+    "version": ">= 13.4.3"
   },
   "build": {
     "development": {
@@ -12,10 +11,7 @@
       "android": {
         "buildType": "apk"
       },
-      "distribution": "internal",
-      "env": {
-        "NODE_ENV": "production"
-      }
+      "distribution": "internal"
     },
     "production": {
       "autoIncrement": true
