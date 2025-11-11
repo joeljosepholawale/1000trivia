@@ -4,6 +4,7 @@ import {config} from '@/config';
 import type {ApiResponse} from '@1000ravier/shared';
 import type {AppError} from '@/types/errors';
 import {isApiError, getErrorMessage} from '@/types/errors';
+import {normalizeResponse} from './normalizer';
 
 class ApiClient {
   private baseURL: string;
@@ -39,7 +40,6 @@ class ApiClient {
     try {
       await AsyncStorage.setItem('auth_token', token);
     } catch (error) {
-      console.error('Failed to save token:', error);
     }
   }
 
@@ -48,7 +48,6 @@ class ApiClient {
     try {
       await AsyncStorage.removeItem('auth_token');
     } catch (error) {
-      console.error('Failed to clear token:', error);
     }
   }
 
@@ -89,7 +88,6 @@ class ApiClient {
 
         return null;
       } catch (error) {
-        console.error('Failed to refresh token:', error);
         return null;
       } finally {
         this.refreshingToken = null;
@@ -185,7 +183,7 @@ class ApiClient {
             }
             
             if (retryResponse.ok) {
-              return retryData;
+              return normalizeResponse(retryData);
             }
             
             // If retry also fails, return the error
@@ -218,7 +216,7 @@ class ApiClient {
         };
       }
 
-      return responseData;
+      return normalizeResponse(responseData);
     } catch (error: unknown) {
       const appError = error as Error;
       

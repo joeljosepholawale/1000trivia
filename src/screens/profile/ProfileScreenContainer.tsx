@@ -28,7 +28,6 @@ export const ProfileScreenContainer = () => {
         dispatch(loadUserAchievements()),
       ]);
     } catch (error) {
-      console.error('Failed to load profile data:', error);
     }
   };
 
@@ -121,7 +120,6 @@ export const ProfileScreenContainer = () => {
 
       await Share.share({message});
     } catch (error) {
-      console.error('Share error:', error);
     }
   };
 

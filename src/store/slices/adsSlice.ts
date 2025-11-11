@@ -98,17 +98,14 @@ export const showRewardedAd = createAsyncThunk(
     try {
       const success = await adsService.showRewardedAd({
         onRewardEarned: async (reward) => {
-          console.log('Reward earned:', reward);
           // Claim the reward from backend
           dispatch(claimAdReward('rewarded_video'));
         },
         onAdClosed: () => {
-          console.log('Rewarded ad closed');
           // Preload next ad
           dispatch(loadRewardedAd());
         },
         onAdFailedToLoad: (error) => {
-          console.error('Rewarded ad failed to load:', error);
         }
       });
       
@@ -129,12 +126,10 @@ export const showInterstitialAd = createAsyncThunk(
     try {
       const success = await adsService.showInterstitialAd({
         onAdClosed: () => {
-          console.log('Interstitial ad closed');
           // Preload next ad
           dispatch(loadInterstitialAd());
         },
         onAdFailedToLoad: (error) => {
-          console.error('Interstitial ad failed to load:', error);
         }
       });
       

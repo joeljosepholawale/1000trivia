@@ -31,7 +31,6 @@ export function useNotifications(handlers: NotificationHandlers = {}) {
     navigation = useNavigation();
   } catch (e) {
     // Navigation not available yet, will be null
-    console.log('Navigation not ready for notifications');
   }
   
   const notificationListener = useRef<Notifications.Subscription | undefined>();
@@ -65,7 +64,6 @@ export function useNotifications(handlers: NotificationHandlers = {}) {
           break;
       }
     } catch (error) {
-      console.error('Navigation error from notification:', error);
     }
   };
 
@@ -73,7 +71,6 @@ export function useNotifications(handlers: NotificationHandlers = {}) {
     // Register for push notifications
     registerForPushNotifications().then((token) => {
       if (token) {
-        console.log('Push token:', token.token);
         handlers.onTokenReceived?.(token);
         // TODO: Send token to backend for storage
       }
@@ -81,7 +78,6 @@ export function useNotifications(handlers: NotificationHandlers = {}) {
 
     // Schedule daily claim reminder on first launch
     scheduleDailyClaimReminder().catch((error) => {
-      console.warn('Failed to schedule daily claim reminder:', error);
     });
 
     // Check if app was opened via notification
@@ -94,13 +90,11 @@ export function useNotifications(handlers: NotificationHandlers = {}) {
 
     // Listen for notifications received while app is foregrounded
     notificationListener.current = addNotificationReceivedListener((notification) => {
-      console.log('Notification received:', notification);
       handlers.onNotificationReceived?.(notification);
     });
 
     // Listen for user tapping on notifications
     responseListener.current = addNotificationResponseListener((response) => {
-      console.log('Notification tapped:', response);
       handleNotificationNavigation(response.notification.request.content.data);
       handlers.onNotificationTapped?.(response);
     });

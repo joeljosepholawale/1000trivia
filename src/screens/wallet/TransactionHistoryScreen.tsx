@@ -44,7 +44,6 @@ export const TransactionHistoryScreen = () => {
     try {
       await dispatch(loadTransactions({limit: 20, offset: 0}));
     } catch (error) {
-      console.error('Failed to load transactions:', error);
     }
   };
 
@@ -54,7 +53,6 @@ export const TransactionHistoryScreen = () => {
       await dispatch(loadTransactions({limit: 20, offset: 0}));
       setHasMore(true);
     } catch (error) {
-      console.error('Failed to refresh transactions:', error);
     } finally {
       setRefreshing(false);
     }
@@ -74,7 +72,6 @@ export const TransactionHistoryScreen = () => {
         setHasMore(false);
       }
     } catch (error) {
-      console.error('Failed to load more transactions:', error);
     } finally {
       setLoadingMore(false);
     }

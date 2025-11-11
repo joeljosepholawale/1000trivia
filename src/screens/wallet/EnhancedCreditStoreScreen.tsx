@@ -104,7 +104,6 @@ const EnhancedCreditStoreScreen: React.FC<Props> = ({navigation}) => {
                   );
                 }
               } catch (error) {
-                console.error('Purchase error:', error);
                 Alert.alert(
                   'Purchase Error',
                   'An unexpected error occurred. Please try again.',

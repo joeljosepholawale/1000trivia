@@ -38,10 +38,6 @@ class AdsService {
   private interstitialAdLoaded = false;
 
   async initialize(): Promise<void> {
-    console.log('[AdsService] Initializing with test AdMob IDs...');
-    console.log('[AdsService] Platform:', Platform.OS);
-    console.log('[AdsService] Test Rewarded ID:', this.getRewardedAdUnitId());
-    console.log('[AdsService] Test Interstitial ID:', this.getInterstitialAdUnitId());
     this.isInitialized = true;
   }
 
@@ -64,15 +60,12 @@ class AdsService {
   }
 
   async loadRewardedAd(): Promise<void> {
-    console.log('[AdsService] Loading test rewarded ad:', this.getRewardedAdUnitId());
     // Simulate ad loading
     await new Promise(resolve => setTimeout(resolve, 500));
     this.rewardedAdLoaded = true;
-    console.log('[AdsService] Test rewarded ad loaded');
   }
 
   async showRewardedAd(callbacks?: AdEventCallbacks): Promise<boolean> {
-    console.log('[AdsService] Mock: Showing rewarded ad');
     
     setTimeout(() => {
       callbacks?.onAdOpened?.();
@@ -96,15 +89,12 @@ class AdsService {
   }
 
   async loadInterstitialAd(): Promise<void> {
-    console.log('[AdsService] Loading test interstitial ad:', this.getInterstitialAdUnitId());
     // Simulate ad loading
     await new Promise(resolve => setTimeout(resolve, 500));
     this.interstitialAdLoaded = true;
-    console.log('[AdsService] Test interstitial ad loaded');
   }
 
   async showInterstitialAd(callbacks?: AdEventCallbacks): Promise<boolean> {
-    console.log('[AdsService] Mock: Showing interstitial ad');
     
     setTimeout(() => {
       callbacks?.onAdOpened?.();
@@ -135,7 +125,6 @@ class AdsService {
         throw new Error(response.error || 'Failed to claim ad reward');
       }
     } catch (error) {
-      console.error('Failed to claim ad reward:', error);
       return {credits: 0, success: false};
     }
   }
@@ -151,7 +140,6 @@ class AdsService {
   }
 
   removeAllListeners(): void {
-    console.log('[AdsService] Cleanup listeners');
   }
 
   async preloadAds(): Promise<void> {
@@ -159,7 +147,6 @@ class AdsService {
       this.loadRewardedAd(),
       this.loadInterstitialAd(),
     ]);
-    console.log('[AdsService] Ads preloaded (mock)');
   }
 }
 

@@ -31,7 +31,6 @@ const AppContent = () => {
   useNotifications({
     enableAutoNavigation: true,
     onTokenReceived: (token) => {
-      console.log('Push token received:', token.token);
       // Note: Token is automatically synced when user is authenticated
       // The backend should handle token updates via API interceptors
       if (isAuthenticated) {
@@ -39,10 +38,10 @@ const AppContent = () => {
       }
     },
     onNotificationReceived: (notification) => {
-      console.log('Notification received while app open:', notification);
+      // Notification received while app open
     },
     onNotificationTapped: (response) => {
-      console.log('User tapped notification:', response.notification.request.content.data);
+      // User tapped notification
     },
   });
 

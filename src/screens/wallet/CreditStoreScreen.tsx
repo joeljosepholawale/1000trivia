@@ -38,7 +38,6 @@ export const CreditStoreScreen = () => {
     try {
       await dispatch(loadCreditBundles());
     } catch (error) {
-      console.error('Failed to load credit bundles:', error);
     }
   };
 

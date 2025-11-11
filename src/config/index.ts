@@ -28,11 +28,11 @@ const validateConfig = (config: Config): void => {
   const adsAppId = config.ads.appId;
 
   if (stripeyKey.includes('YOUR_')) {
-    console.warn('⚠️ Warning: Stripe key contains placeholder values. Please set up proper Stripe credentials.');
+    // Stripe key needs to be configured
   }
 
   if (adsAppId.includes('YOUR_')) {
-    console.warn('⚠️ Warning: Ad unit IDs contain placeholder values. Ad functionality will be limited.');
+    // Ad unit IDs need to be configured
   }
 };
 

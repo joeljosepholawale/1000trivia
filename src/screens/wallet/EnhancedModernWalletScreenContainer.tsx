@@ -22,7 +22,6 @@ export const EnhancedModernWalletScreenContainer = () => {
         dispatch(loadTransactions()),
       ]);
     } catch (error) {
-      console.error('Failed to load wallet data:', error);
     }
   };
 
@@ -33,17 +32,14 @@ export const EnhancedModernWalletScreenContainer = () => {
       // Could show success toast here
       console.log('Daily credits claimed successfully:', result);
     } catch (error: any) {
-      console.error('Failed to claim daily credits:', error);
       // Could show error toast here
       if (error?.includes?.('Email verification required')) {
-        console.log('User needs to verify email first');
       }
     }
   };
 
   const handleWatchAd = () => {
     // TODO: Implement ad watching logic
-    console.log('Watch ad');
   };
 
   const handleBuyCredits = () => {

@@ -106,7 +106,6 @@ export const RewardedAdButton: React.FC<RewardedAdButtonProps> = ({
       dispatch(clearErrors());
       await dispatch(showRewardedAd()).unwrap();
     } catch (error) {
-      console.error('Error showing rewarded ad:', error);
       Alert.alert(
         'Ad Error',
         'Failed to show the ad. Please try again later.',

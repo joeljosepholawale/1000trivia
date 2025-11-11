@@ -43,7 +43,6 @@ export async function registerForPushNotifications(): Promise<PushNotificationTo
   try {
     // Check if physical device
     if (!Device.isDevice) {
-      console.warn('Push notifications only work on physical devices');
       return null;
     }
 
@@ -58,7 +57,6 @@ export async function registerForPushNotifications(): Promise<PushNotificationTo
     }
 
     if (finalStatus !== 'granted') {
-      console.warn('Failed to get push notification permissions');
       return null;
     }
 
@@ -69,7 +67,6 @@ export async function registerForPushNotifications(): Promise<PushNotificationTo
         projectId: 'bd655ec7-7393-4868-aba8-e7f9910a45fc',
       });
     } catch (error) {
-      console.warn('Could not get Expo push token (FCM not configured):', error);
       // Return null if FCM is not configured - push notifications won't work but app will run
       return null;
     }
@@ -113,7 +110,6 @@ export async function registerForPushNotifications(): Promise<PushNotificationTo
       type: 'expo',
     };
   } catch (error) {
-    console.error('Error registering for push notifications:', error);
     return null;
   }
 }
@@ -138,7 +134,6 @@ export async function sendLocalNotification(
 
     return id;
   } catch (error) {
-    console.error('Error sending local notification:', error);
     return null;
   }
 }
@@ -163,7 +158,6 @@ export async function scheduleNotification(
 
     return id;
   } catch (error) {
-    console.error('Error scheduling notification:', error);
     return null;
   }
 }
@@ -175,7 +169,6 @@ export async function cancelNotification(notificationId: string): Promise<void> 
   try {
     await Notifications.cancelScheduledNotificationAsync(notificationId);
   } catch (error) {
-    console.error('Error canceling notification:', error);
   }
 }
 
@@ -186,7 +179,6 @@ export async function cancelAllNotifications(): Promise<void> {
   try {
     await Notifications.cancelAllScheduledNotificationsAsync();
   } catch (error) {
-    console.error('Error canceling all notifications:', error);
   }
 }
 
@@ -197,7 +189,6 @@ export async function getScheduledNotifications(): Promise<Notifications.Notific
   try {
     return await Notifications.getAllScheduledNotificationsAsync();
   } catch (error) {
-    console.error('Error getting scheduled notifications:', error);
     return [];
   }
 }

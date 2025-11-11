@@ -36,7 +36,6 @@ export async function getOrCreateReferralCode(prefix: string = 'RAV'): Promise<s
     await AsyncStorage.setItem(REFERRAL_CODE_KEY, code);
     return code;
   } catch (e) {
-    console.error('Error creating referral code', e);
     // Fallback random
     const code = `${prefix}-${Math.random().toString(36).slice(2, 10).toUpperCase()}`;
     await AsyncStorage.setItem(REFERRAL_CODE_KEY, code);
@@ -71,7 +70,6 @@ export async function useReferralCode(code: string): Promise<{ ok: boolean; erro
 
     return { ok: true };
   } catch (e) {
-    console.error('Error using referral code', e);
     return { ok: false, error: 'Fehler beim Verwenden des Codes.' };
   }
 }

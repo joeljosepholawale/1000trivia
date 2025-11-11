@@ -144,7 +144,6 @@ export const gameModesAPI = {
       // For now, return false - implement proper check later
       return false;
     } catch (error) {
-      console.error('Error checking entry status:', error);
       return false;
     }
   }

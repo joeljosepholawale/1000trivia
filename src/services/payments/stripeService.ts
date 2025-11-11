@@ -24,9 +24,7 @@ class StripeService {
       // The Stripe initialization is handled by the StripeProvider wrapper
       // This method can be used for additional setup if needed
       this.isInitialized = true;
-      console.log('Stripe service initialized');
     } catch (error) {
-      console.error('Failed to initialize Stripe service:', error);
       throw error;
     }
   }
@@ -49,7 +47,6 @@ class StripeService {
         publishableKey: response.data.publishableKey,
       };
     } catch (error) {
-      console.error('Error creating payment intent:', error);
       throw error;
     }
   }
@@ -89,7 +86,6 @@ class StripeService {
       });
 
       if (initError) {
-        console.error('Error initializing payment sheet:', initError);
         return {success: false, error: initError.message};
       }
 
@@ -97,8 +93,6 @@ class StripeService {
       const {error: presentError} = await presentPaymentSheet();
 
       if (presentError) {
-        console.error('Error presenting payment sheet:', presentError);
-        
         if (presentError.code === 'Canceled') {
           return {success: false, error: 'Payment cancelled by user'};
         }
@@ -107,11 +101,9 @@ class StripeService {
       }
 
       // Payment was successful
-      console.log('Payment completed successfully');
       return {success: true};
 
     } catch (error) {
-      console.error('Unexpected error in payment sheet:', error);
       return {
         success: false, 
         error: error instanceof Error ? error.message : 'Unknown payment error'
@@ -135,7 +127,6 @@ class StripeService {
         credits: response.data.creditsAdded,
       };
     } catch (error) {
-      console.error('Error confirming payment:', error);
       return {success: false};
     }
   }
@@ -150,11 +141,9 @@ class StripeService {
   }> {
     try {
       // Step 1: Create payment intent
-      console.log('Creating payment intent for bundle:', bundleId);
       const paymentIntent = await this.createPaymentIntent(bundleId);
 
       // Step 2: Present payment sheet
-      console.log('Presenting payment sheet');
       const paymentResult = await this.presentPaymentSheet(paymentIntent);
 
       if (!paymentResult.success) {
@@ -166,12 +155,10 @@ class StripeService {
 
       // Step 3: Confirm payment with backend (optional - Stripe webhooks usually handle this)
       // This step depends on your backend implementation
-      console.log('Payment completed successfully');
 
       return {success: true};
 
     } catch (error) {
-      console.error('Error in complete purchase flow:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Purchase failed',
@@ -192,7 +179,6 @@ class StripeService {
 
       return {success: true};
     } catch (error) {
-      console.error('Error requesting refund:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Refund request failed',

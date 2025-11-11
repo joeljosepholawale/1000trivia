@@ -29,7 +29,6 @@ export const GameModeLeaderboard: React.FC<Props> = ({ modeType, showTop = 10 })
       const data = await gameModesAPI.getLeaderboard(modeType, showTop);
       setLeaderboard(data);
     } catch (error) {
-      console.error('Error loading leaderboard:', error);
     } finally {
       setLoading(false);
       setRefreshing(false);

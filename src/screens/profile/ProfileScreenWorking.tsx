@@ -54,7 +54,6 @@ export const ProfileScreen = () => {
         });
       }
     } catch (error) {
-      console.error('Failed to load profile data:', error);
     } finally {
       setLoading(false);
     }

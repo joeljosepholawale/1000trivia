@@ -50,7 +50,6 @@ export default function ReferralScreen() {
         title: '1000Ravier Einladung',
       });
     } catch (e) {
-      console.error('Error sharing', e);
     }
   };
 
