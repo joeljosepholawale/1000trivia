@@ -334,6 +334,7 @@ export class GameService {
       }
 
       // Get the question with correct answer
+      // questionId is actually the sessionQuestionId (ID of session_questions record)
       const { data: sessionQuestion } = await db.getClient()
         .from('session_questions')
         .select(`
@@ -341,10 +342,11 @@ export class GameService {
           question:questions(*)
         `)
         .eq('session_id', sessionId)
-        .eq('question_id', questionId)
+        .eq('id', questionId) // Changed from question_id to id
         .single();
 
       if (!sessionQuestion) {
+        this.logger.error(`Question not found: sessionId=${sessionId}, questionId=${questionId}`);
         return { success: false, message: 'Question not found' };
       }
 
