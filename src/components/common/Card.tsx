@@ -14,7 +14,7 @@ export interface CardProps {
   padding?: number;
 }
 
-export const Card: React.FC<CardProps>
+export const Card: React.FC<CardProps> = ({
   children,
   style,
   gradient = false,

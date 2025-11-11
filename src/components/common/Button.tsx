@@ -23,7 +23,7 @@ export interface ButtonProps extends TouchableOpacityProps {
   gradient?: boolean;
 }
 
-export const Button: React.FC<ButtonProps>
+export const Button: React.FC<ButtonProps> = ({
   title,
   onPress,
   variant = 'primary',

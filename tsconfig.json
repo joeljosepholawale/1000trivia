@@ -24,7 +24,6 @@
     "strict": false,
     "skipLibCheck": true,
     "noImplicitAny": false,
-    "suppressImplicitAnyIndexErrors": true,
     "target": "esnext",
     "resolveJsonModule": true
   },
@@ -32,6 +31,8 @@
     "node_modules",
     "babel.config.js",
     "metro.config.js",
-    "jest.config.js"
+    "jest.config.js",
+    "backend-new/**/*",
+    "android/**/*"
   ]
 }
