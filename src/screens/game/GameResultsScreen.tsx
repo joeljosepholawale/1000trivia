@@ -58,7 +58,7 @@ export const GameResultsScreen = () => {
         dispatch(loadUserRank()),
       ]);
     } catch (error) {
-      console.error('Failed to load result data:', error);
+      // Silently handle result data load errors
     }
   };
 

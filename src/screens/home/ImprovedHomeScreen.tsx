@@ -48,7 +48,7 @@ export const ImprovedHomeScreen = () => {
         dispatch(loadRecentWinners()),
       ]);
     } catch (error) {
-      console.error('Failed to load dashboard data:', error);
+      // Silently handle load errors
     }
   };
 

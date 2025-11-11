@@ -63,7 +63,7 @@ export const HomeScreen = () => {
         setDailyBonusClaimed(bonusResponse.data.claimed || false);
       }
     } catch (error) {
-      console.error('Failed to load home data:', error);
+      // Silently handle load errors
     } finally {
       setLoading(false);
     }
@@ -120,7 +120,6 @@ export const HomeScreen = () => {
         );
       }
     } catch (error) {
-      console.error('Failed to claim bonus:', error);
       Alert.alert('Error', 'Failed to claim bonus. Please try again.');
     } finally {
       setClaimingBonus(false);

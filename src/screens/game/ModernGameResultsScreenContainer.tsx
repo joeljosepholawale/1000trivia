@@ -100,11 +100,10 @@ export const ModernGameResultsScreenContainer = () => {
       });
 
       if (result.action === Share.sharedAction) {
-        console.log('Results shared successfully');
+        // Results shared successfully
       }
     } catch (error) {
       Alert.alert('Error', 'Failed to share results');
-      console.error('Share error:', error);
     }
   };
 

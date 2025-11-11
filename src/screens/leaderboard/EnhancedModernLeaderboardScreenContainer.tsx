@@ -21,7 +21,7 @@ export const EnhancedModernLeaderboardScreenContainer = () => {
     try {
       await dispatch(loadLeaderboard(period)).unwrap();
     } catch (error) {
-      console.error('Failed to load leaderboard:', error);
+      // Silently handle load errors
     }
   };
 
@@ -31,7 +31,6 @@ export const EnhancedModernLeaderboardScreenContainer = () => {
 
   const handleUserPress = (userId: string) => {
     // TODO: Navigate to user profile
-    console.log('User pressed:', userId);
   };
 
   // Map leaderboard data to screen format

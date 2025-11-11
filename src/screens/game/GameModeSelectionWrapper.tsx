@@ -43,8 +43,8 @@ export const GameModeSelectionWrapper: React.FC = () => {
         sessionId: result.session.id,
       });
     } catch (error: any) {
-      console.error('Failed to join game:', error);
-      Alert.alert('Error', error || 'Failed to join game mode');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to join game mode';
+      Alert.alert('Error', errorMessage);
     } finally {
       setJoining(false);
     }

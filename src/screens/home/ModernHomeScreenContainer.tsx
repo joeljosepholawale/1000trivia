@@ -40,7 +40,7 @@ export const ModernHomeScreenContainer = () => {
         dispatch(loadUserStats()),
       ]);
     } catch (error) {
-      console.error('Failed to load home data:', error);
+      // Silently handle load errors
     }
   };
 
@@ -53,7 +53,7 @@ export const ModernHomeScreenContainer = () => {
       await dispatch(claimDailyCredits()).unwrap();
       await dispatch(loadWalletInfo());
     } catch (error) {
-      console.error('Failed to claim daily credits:', error);
+      // Silently handle claim error
     }
   };
 

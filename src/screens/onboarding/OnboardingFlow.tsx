@@ -94,7 +94,7 @@ export default function OnboardingFlow({ onComplete }: OnboardingFlowProps) {
       await AsyncStorage.setItem(ONBOARDING_KEY, 'true');
       onComplete();
     } catch (error) {
-      console.error('Error saving onboarding completion:', error);
+      // Silently handle storage error
       onComplete(); // Complete anyway
     }
   };
@@ -308,6 +308,6 @@ export async function resetOnboarding(): Promise<void> {
   try {
     await AsyncStorage.removeItem(ONBOARDING_KEY);
   } catch (error) {
-    console.error('Error resetting onboarding:', error);
+    // Silently handle storage error
   }
 }

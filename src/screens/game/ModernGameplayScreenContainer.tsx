@@ -54,8 +54,8 @@ export const ModernGameplayScreenContainer = () => {
       setQuestions(prev => [...prev, newQuestion]);
       setStartTime(Date.now());
     } catch (error: any) {
-      console.error('Failed to load question:', error);
-      Alert.alert('Error', error || 'Failed to load question', [
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load question';
+      Alert.alert('Error', errorMessage, [
         {text: 'Retry', onPress: loadQuestion},
         {text: 'End Game', onPress: handleEndSession, style: 'cancel'},
       ]);
@@ -98,7 +98,6 @@ export const ModernGameplayScreenContainer = () => {
         }, 1500);
       }
     } catch (error: any) {
-      console.error('Failed to submit answer:', error);
       Alert.alert('Error', 'Failed to submit answer. Please try again.');
     } finally {
       setSubmitting(false);
@@ -130,8 +129,7 @@ export const ModernGameplayScreenContainer = () => {
         rank: result.rank,
       });
     } catch (error: any) {
-      console.error('Failed to end session:', error);
-      // Navigate anyway
+      // Silently handle session end error
       navigation.goBack();
     }
   };

@@ -37,7 +37,7 @@ export const LeaderboardScreen = () => {
         setLeaderboard(response.data);
       }
     } catch (error) {
-      console.error('Failed to load leaderboard:', error);
+      // Silently handle load errors
     } finally {
       setLoading(false);
     }

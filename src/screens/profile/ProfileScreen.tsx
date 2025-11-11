@@ -41,7 +41,6 @@ export const ProfileScreen = () => {
       icon: 'emoji-events',
       onPress: () => {
         // Navigate to achievements screen (to be implemented)
-        console.log('Navigate to achievements');
       },
     },
     {
@@ -51,7 +50,6 @@ export const ProfileScreen = () => {
       icon: 'history',
       onPress: () => {
         // Navigate to game history screen (to be implemented)
-        console.log('Navigate to game history');
       },
     },
     {
@@ -61,7 +59,6 @@ export const ProfileScreen = () => {
       icon: 'person-add',
       onPress: () => {
         // Navigate to referrals screen (to be implemented)
-        console.log('Navigate to referrals');
       },
     },
     {
@@ -71,7 +68,6 @@ export const ProfileScreen = () => {
       icon: 'help',
       onPress: () => {
         // Navigate to help screen (to be implemented)
-        console.log('Navigate to help');
       },
     },
   ];

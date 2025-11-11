@@ -52,7 +52,7 @@ export const GameModeSelectionScreen = () => {
         dispatch(loadWalletInfo()),
       ]);
     } catch (error) {
-      console.error('Failed to load game data:', error);
+      // Silently handle load errors - UI will show loading state
     }
   };
 
