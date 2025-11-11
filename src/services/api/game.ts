@@ -36,21 +36,22 @@ export interface SessionStatsResponse {
 export const gameAPI = {
   // Get available game modes
   getGameModes: async (): Promise<ApiResponse<GameMode[]>> => {
-    return apiClient.get('/game/modes');
+    return apiClient.get('/game-modes');
   },
 
   // Get active periods
   getActivePeriods: async (): Promise<ApiResponse<Period[]>> => {
-    return apiClient.get('/game/periods/active');
+    return apiClient.get('/game-modes/periods/active');
   },
 
   // Join a game mode (with optional payment)
+  // Note: periodId is required, not modeId
   joinGameMode: async (
-    modeId: string,
+    periodId: string,
     paymentIntentId?: string
   ): Promise<ApiResponse<JoinGameResponse>> => {
     return apiClient.post('/game/join', {
-      modeId,
+      periodId,
       paymentIntentId,
     });
   },

@@ -81,9 +81,9 @@ export const loadActivePeriods = createAsyncThunk(
 
 export const joinGameMode = createAsyncThunk(
   'game/joinGameMode',
-  async ({modeId, paymentIntentId}: {modeId: string; paymentIntentId?: string}, {rejectWithValue}) => {
+  async ({periodId, paymentIntentId}: {periodId: string; paymentIntentId?: string}, {rejectWithValue}) => {
     try {
-      const response = await gameAPI.joinGameMode(modeId, paymentIntentId);
+      const response = await gameAPI.joinGameMode(periodId, paymentIntentId);
       if (!response.success) {
         return rejectWithValue(response.error?.message || 'Failed to join game');
       }

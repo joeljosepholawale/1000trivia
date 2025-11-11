@@ -1,7 +1,7 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import {HomeScreen} from '@/screens/home/HomeScreenSimple';
+import {ModernHomeScreenContainer} from '@/screens/home/ModernHomeScreenContainer';
 
 export type HomeStackParamList = {
   Home: undefined;
@@ -16,7 +16,7 @@ export const HomeNavigator = () => {
         headerShown: false,
       }}
     >
-      <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Screen name="Home" component={ModernHomeScreenContainer} />
     </Stack.Navigator>
   );
 };

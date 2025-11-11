@@ -16,31 +16,32 @@ export const GameModeSelectionWrapper: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.user);
   const {credits} = useSelector((state: RootState) => state.wallet);
-  const {gameModes, isLoading} = useSelector((state: RootState) => state.game);
+  const {gameModes, activePeriods, isLoading} = useSelector((state: RootState) => state.game);
   const [joining, setJoining] = useState(false);
   
   const userCredits = credits || 0;
   const userLevel = getUserLevel(user);
   const emailVerified = isEmailVerified(user);
 
-  // Load game modes from backend on mount
+  // Load game modes and active periods from backend on mount
   useEffect(() => {
     dispatch(loadGameModes());
+    dispatch(loadActivePeriods());
   }, [dispatch]);
 
-  const handleJoinMode = async (modeId: string) => {
+  const handleJoinMode = async (periodId: string) => {
     if (joining) return;
     
     try {
       setJoining(true);
       
-      // Join the game mode via API
-      const result = await dispatch(joinGameMode({modeId})).unwrap();
+      // Join the game mode via API using periodId
+      const result = await dispatch(joinGameMode({periodId})).unwrap();
       
       // Navigate to gameplay screen with session ID
       navigation.navigate('Gameplay', {
-        modeId,
-        sessionId: result.session.id,
+        periodId,
+        sessionId: result.session?.id || result.sessionId,
       });
     } catch (error: any) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to join game mode';
@@ -59,6 +60,8 @@ export const GameModeSelectionWrapper: React.FC = () => {
       userCredits={userCredits}
       userLevel={userLevel}
       isEmailVerified={emailVerified}
+      activePeriods={activePeriods}
+      isLoading={isLoading || joining}
       onJoinMode={handleJoinMode}
       onBack={handleBack}
     />

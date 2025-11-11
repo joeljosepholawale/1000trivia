@@ -2,7 +2,7 @@ import React from 'react';
 import {createStackNavigator} from '@react-navigation/stack';
 import {Colors} from '../styles/colors';
 
-import {LeaderboardScreen} from '@/screens/leaderboard/LeaderboardScreenWorking';
+import {EnhancedModernLeaderboardScreenContainer} from '@/screens/leaderboard/EnhancedModernLeaderboardScreenContainer';
 
 export type LeaderboardStackParamList = {
   Leaderboard: undefined;
@@ -34,7 +34,7 @@ export const LeaderboardNavigator: React.FC = () => {
       }}>
       <Stack.Screen
         name="Leaderboard"
-        component={LeaderboardScreen}
+        component={EnhancedModernLeaderboardScreenContainer}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

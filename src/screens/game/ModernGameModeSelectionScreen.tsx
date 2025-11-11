@@ -37,6 +37,33 @@ interface GameModeDetail {
   featured?: boolean;
 }
 
+// Helper functions
+const calculateTimeLeft = (endDate: string): string => {
+  const now = new Date();
+  const end = new Date(endDate);
+  const diff = end.getTime() - now.getTime();
+  
+  if (diff <= 0) return 'Ended';
+  
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  
+  if (days > 0) {
+    return `${days} Day${days > 1 ? 's' : ''} ${hours} Hour${hours > 1 ? 's' : ''}`;
+  }
+  return `${hours} Hour${hours > 1 ? 's' : ''}`;
+};
+
+const getSubtitle = (modeType: string): string => {
+  const subtitles: Record<string, string> = {
+    'FREE': 'Play for free and win!',
+    'CHALLENGE': 'Intensive Competition',
+    'TOURNAMENT': 'For experienced players',
+    'SUPER_TOURNAMENT': 'Ultimate Challenge',
+  };
+  return subtitles[modeType] || 'Trivia Game';
+};
+
 const gameModes: GameModeDetail[] = [
   {
     id: '1',
@@ -109,18 +136,24 @@ const gameModes: GameModeDetail[] = [
   },
 ];
 
+import type {Period} from '@1000ravier/shared';
+
 interface ModernGameModeSelectionScreenProps {
   userCredits?: number;
   userLevel?: number;
   isEmailVerified?: boolean;
-  onJoinMode: (modeId: string) => void;
+  activePeriods: Period[];
+  isLoading?: boolean;
+  onJoinMode: (periodId: string) => void;
   onBack: () => void;
 }
 
 export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScreenProps> = ({
-  userCredits = 2500,
-  userLevel = 5,
-  isEmailVerified = true,
+  userCredits = 0,
+  userLevel = 1,
+  isEmailVerified = false,
+  activePeriods = [],
+  isLoading = false,
   onJoinMode,
   onBack,
 }) => {
@@ -137,7 +170,115 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
     }).start();
   }, []);
 
-  const selectedMode = gameModes[selectedIndex];
+  // Map activePeriods to game mode cards
+  const mappedGameModes: GameModeDetail[] = activePeriods.map((period, index) => {
+    const mode = period.mode;
+    if (!mode) {
+      return null;
+    }
+    
+    const typeMap: Record<string, GameModeDetail['type']> = {
+      'FREE': 'FREE',
+      'CHALLENGE': 'CHALLENGE',
+      'TOURNAMENT': 'TOURNAMENT',
+      'SUPER_TOURNAMENT': 'SUPER_TOURNAMENT',
+    };
+
+    const gradientMap: Record<string, string[]> = {
+      'FREE': [theme.colors.success[400], theme.colors.success[600]],
+      'CHALLENGE': [theme.colors.secondary[400], theme.colors.secondary[600]],
+      'TOURNAMENT': [theme.colors.primary[400], theme.colors.primary[600]],
+      'SUPER_TOURNAMENT': ['#FFD700', '#FFA500'],
+    };
+
+    const iconMap: Record<string, keyof typeof MaterialIcons.glyphMap> = {
+      'FREE': 'play-circle-filled',
+      'CHALLENGE': 'whatshot',
+      'TOURNAMENT': 'emoji-events',
+      'SUPER_TOURNAMENT': 'military-tech',
+    };
+
+    const entryFeeDisplay = mode.entry_fee === 0
+      ? 'Free'
+      : mode.entry_fee_currency === 'USD'
+      ? `$${mode.entry_fee}`
+      : `${mode.entry_fee.toLocaleString()} Credits`;
+
+    const prizePoolDisplay = mode.prize_pool
+      ? `$${mode.prize_pool.toLocaleString()}`
+      : '$0';
+
+    const timeLeft = calculateTimeLeft(period.end_date);
+
+    const requirements: string[] = [];
+    if (mode.entry_fee > 0) {
+      requirements.push(entryFeeDisplay);
+    }
+    if (mode.type === 'SUPER_TOURNAMENT') {
+      requirements.push('Level 10+');
+    }
+
+    return {
+      id: period.id,
+      type: typeMap[mode.type] || 'FREE',
+      name: mode.display_name || mode.name,
+      subtitle: getSubtitle(mode.type),
+      questions: mode.questions,
+      entryFee: entryFeeDisplay,
+      entryFeeValue: mode.entry_fee,
+      entryFeeCurrency: mode.entry_fee_currency,
+      prizePool: prizePoolDisplay,
+      gradient: gradientMap[mode.type] || gradientMap['FREE'],
+      icon: iconMap[mode.type] || 'play-circle-filled',
+      participants: period.participants_count || 0,
+      maxParticipants: period.max_participants || 10000,
+      timeLeft,
+      requirements,
+      featured: index === 0,
+    };
+  }).filter((mode): mode is GameModeDetail => mode !== null);
+
+  // Use mapped modes or fallback to hardcoded if no data
+  const displayModes = mappedGameModes.length > 0 ? mappedGameModes : gameModes;
+  const selectedMode = displayModes[selectedIndex] || displayModes[0];
+
+  // Show loading state
+  if (isLoading && mappedGameModes.length === 0) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={onBack} style={styles.backButton}>
+            <MaterialIcons name="arrow-back" size={24} color={theme.colors.text.primary} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Choose Game Mode</Text>
+          <View style={styles.placeholder} />
+        </View>
+        <View style={[styles.container, {justifyContent: 'center', alignItems: 'center'}]}>
+          <Text style={styles.headerTitle}>Loading game modes...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  // Show empty state if no modes available
+  if (displayModes.length === 0) {
+    return (
+      <SafeAreaView style={styles.container} edges={['top']}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={onBack} style={styles.backButton}>
+            <MaterialIcons name="arrow-back" size={24} color={theme.colors.text.primary} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Choose Game Mode</Text>
+          <View style={styles.placeholder} />
+        </View>
+        <View style={[styles.container, {justifyContent: 'center', alignItems: 'center', padding: theme.spacing[6]}]}>
+          <MaterialIcons name="info" size={64} color={theme.colors.text.secondary} />
+          <Text style={[styles.headerTitle, {marginTop: theme.spacing[4], textAlign: 'center'}]}>No active game modes available</Text>
+          <Text style={[styles.cardSubtitle, {color: theme.colors.text.secondary, marginTop: theme.spacing[2], textAlign: 'center'}]}>Please check back later</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
   const canJoin = () => {
     const mode = selectedMode;
@@ -289,13 +430,13 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
           decelerationRate="fast"
           snapToInterval={width}
         >
-          {gameModes.map((mode, index) => renderCard(mode, index))}
+          {displayModes.map((mode, index) => renderCard(mode, index))}
         </ScrollView>
       </Animated.View>
 
       {/* Pagination Dots */}
       <View style={styles.pagination}>
-        {gameModes.map((_, index) => (
+        {displayModes.map((_, index) => (
           <View
             key={index}
             style={[
