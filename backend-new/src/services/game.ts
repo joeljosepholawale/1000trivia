@@ -299,6 +299,7 @@ export class GameService {
       isCorrect: boolean;
       correctAnswer?: string;
       score: number;
+      sessionComplete: boolean;
       progress: {
         answeredQuestions: number;
         totalQuestions: number;
