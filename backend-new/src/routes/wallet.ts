@@ -114,10 +114,20 @@ router.post('/claim-daily', authService.authenticate, async (req, res) => {
       ipAddress: req.ip
     });
 
+    // Format response to match frontend expectations
+    const nextClaimAt = new Date();
+    nextClaimAt.setUTCDate(nextClaimAt.getUTCDate() + 1);
+    nextClaimAt.setUTCHours(0, 0, 0, 0);
+
     res.json({
       success: true,
       message: result.message,
-      data: result.data
+      data: {
+        amount: result.data?.creditsAwarded || 0,
+        newBalance: result.data?.newBalance || 0,
+        nextClaimAt: nextClaimAt.toISOString(),
+        transactionId: `daily_${user.id}_${Date.now()}`
+      }
     });
   } catch (error) {
     res.status(500).json({

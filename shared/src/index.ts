@@ -75,3 +75,25 @@ export interface LeaderboardEntry {
   winRate?: number;
   rankChange?: number;
 }
+
+export type TransactionType = 'CREDIT' | 'DEBIT' | 'DAILY_CLAIM' | 'AD_REWARD' | 'PURCHASE' | 'ENTRY_FEE' | 'REFUND' | 'BONUS' | 'PENALTY' | 'GAME_WIN' | 'REFERRAL_BONUS' | 'ACHIEVEMENT_REWARD';
+export type TransactionStatus = 'PENDING' | 'COMPLETED' | 'FAILED' | 'REFUNDED' | 'REFUND_REQUESTED';
+
+export interface WalletTransaction {
+  id: string;
+  type: TransactionType;
+  amount: number;
+  description?: string;
+  createdAt: string;
+  status: TransactionStatus;
+  metadata?: any;
+}
+
+export interface CreditsBundle {
+  id: string;
+  credits: number;
+  priceNgn: number;
+  bonusCredits?: number;
+  popular?: boolean;
+  savings?: number;
+}
