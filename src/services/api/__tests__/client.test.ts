@@ -6,6 +6,7 @@ describe('ApiClient', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     global.fetch = jest.fn();
+    apiClient.setToken(null);
   });
 
   describe('Token Management', () => {

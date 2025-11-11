@@ -1,8 +1,4 @@
-// Add custom matchers
-import '@testing-library/jest-native/extend-expect';
-
-// Mock React Native modules
-jest.mock('react-native/Libraries/Animated/NativeAnimatedHelper');
+// Jest-expo already includes testing library matchers and setup
 
 // Setup global test environment variables
 global.fetch = jest.fn();
