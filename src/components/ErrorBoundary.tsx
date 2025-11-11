@@ -77,14 +77,14 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               <MaterialIcons name="error-outline" size={80} color={theme.colors.error[500]} />
             </View>
 
-            <Text style={styles.title}>Oops! Etwas ist schiefgelaufen</Text>
+            <Text style={styles.title}>Oops! Something went wrong</Text>
             <Text style={styles.message}>
-              Die App ist auf einen unerwarteten Fehler gestoßen. Wir arbeiten daran, dies zu beheben.
+              The app encountered an unexpected error. We're working to fix this.
             </Text>
 
             {__DEV__ && this.state.error && (
               <ScrollView style={styles.errorDetails}>
-                <Text style={styles.errorTitle}>Fehlerdetails (nur im Dev-Modus):</Text>
+                <Text style={styles.errorTitle}>Error details (dev mode only):</Text>
                 <Text style={styles.errorText}>{this.state.error.toString()}</Text>
                 {this.state.errorInfo && (
                   <Text style={styles.errorStack}>{this.state.errorInfo.componentStack}</Text>
@@ -95,16 +95,16 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
             <View style={styles.actions}>
               <TouchableOpacity style={styles.primaryButton} onPress={this.handleReload}>
                 <MaterialIcons name="refresh" size={24} color={theme.colors.white} />
-                <Text style={styles.primaryButtonText}>App neu laden</Text>
+                <Text style={styles.primaryButtonText}>Reload App</Text>
               </TouchableOpacity>
 
               <TouchableOpacity style={styles.secondaryButton} onPress={this.handleReset}>
-                <Text style={styles.secondaryButtonText}>Erneut versuchen</Text>
+                <Text style={styles.secondaryButtonText}>Try Again</Text>
               </TouchableOpacity>
             </View>
 
             <Text style={styles.footer}>
-              Wenn das Problem weiterhin besteht, kontaktiere bitte den Support.
+              If the problem persists, please contact support.
             </Text>
           </View>
         </SafeAreaView>

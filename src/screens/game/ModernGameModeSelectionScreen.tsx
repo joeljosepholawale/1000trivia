@@ -53,7 +53,7 @@ const gameModes: GameModeDetail[] = [
     participants: 1247,
     maxParticipants: 10000,
     timeLeft: '3 Days 14 Hours',
-    requirements: ['Email Verification'],
+    requirements: [],
     featured: true,
   },
   {
@@ -71,7 +71,7 @@ const gameModes: GameModeDetail[] = [
     participants: 342,
     maxParticipants: 1000,
     timeLeft: '12 Days 8 Hours',
-    requirements: ['Email Verification', 'Payment $10'],
+    requirements: ['Payment $10'],
   },
   {
     id: '3',
@@ -88,7 +88,7 @@ const gameModes: GameModeDetail[] = [
     participants: 89,
     maxParticipants: 500,
     timeLeft: '18 Days 5 Hours',
-    requirements: ['Email Verification', '1,000 Credits Balance'],
+    requirements: ['1,000 Credits Balance'],
   },
   {
     id: '4',
@@ -105,7 +105,7 @@ const gameModes: GameModeDetail[] = [
     participants: 12,
     maxParticipants: 100,
     timeLeft: '25 Days 3 Hours',
-    requirements: ['Email Verification', '10,000 Credits Balance', 'Level 10+'],
+    requirements: ['10,000 Credits Balance', 'Level 10+'],
   },
 ];
 
@@ -141,7 +141,7 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
 
   const canJoin = () => {
     const mode = selectedMode;
-    if (!isEmailVerified) return false;
+    // Email verification check removed - all users can play
     
     if (mode.entryFeeCurrency === 'CREDITS') {
       return userCredits >= mode.entryFeeValue;
@@ -153,9 +153,7 @@ export const ModernGameModeSelectionScreen: React.FC<ModernGameModeSelectionScre
   const getMissingRequirements = () => {
     const missing: string[] = [];
     
-    if (!isEmailVerified) {
-      missing.push('Email must be verified');
-    }
+    // Email verification requirement removed
     
     if (selectedMode.entryFeeCurrency === 'CREDITS' && userCredits < selectedMode.entryFeeValue) {
       missing.push(`Need ${selectedMode.entryFeeValue - userCredits} more credits`);
