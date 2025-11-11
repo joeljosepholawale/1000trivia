@@ -23,6 +23,8 @@
     "noEmit": true,
     "strict": false,
     "skipLibCheck": true,
+    "noImplicitAny": false,
+    "suppressImplicitAnyIndexErrors": true,
     "target": "esnext",
     "resolveJsonModule": true
   },

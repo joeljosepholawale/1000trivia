@@ -380,7 +380,7 @@ export const EnterpriseLoginScreen = ({ navigation }: Props) => {
             <View style={styles.footer}>
               <Text style={styles.footerText}>Don't have an account? </Text>
               <TouchableOpacity
-                onPress={() => navigation.navigate('EnterpriseRegister')}
+                onPress={() => navigation.navigate('Register')}
                 disabled={isLoading}
               >
                 <Text style={styles.footerLink}>Create one</Text>
