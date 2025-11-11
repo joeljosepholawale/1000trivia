@@ -1,4 +1,4 @@
-# ONLY TRACK backend-new/ and .md files
+# ONLY TRACK backend-new/ folder
 # Everything else is excluded
 
 # Exclude all files by default
@@ -8,7 +8,6 @@
 !.gitignore
 !.env.example
 !backend-new/
-!*.md
 
 # Backend node_modules
 backend-new/node_modules/
