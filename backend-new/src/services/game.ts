@@ -83,11 +83,32 @@ export class GameService {
         if (existingSession.data.status === 'COMPLETED') {
           return { success: false, message: 'You have already completed this game' };
         } else {
-          return {
-            success: true,
-            message: 'Resuming existing game session',
-            data: { sessionId: existingSession.data.id }
-          };
+          // Check if session has questions assigned
+          const { data: questions, error: questionsError } = await db.getClient()
+            .from('session_questions')
+            .select('id')
+            .eq('session_id', existingSession.data.id)
+            .limit(1);
+
+          if (!questionsError && questions && questions.length > 0) {
+            // Session has questions, resume it
+            return {
+              success: true,
+              message: 'Resuming existing game session',
+              data: { sessionId: existingSession.data.id }
+            };
+          } else {
+            // Session has no questions - delete it and create a new one
+            this.logger.warn(`Deleting broken session ${existingSession.data.id} with no questions`);
+            
+            await db.getClient().from('answers').delete().eq('session_id', existingSession.data.id);
+            await db.getClient().from('session_questions').delete().eq('session_id', existingSession.data.id);
+            await db.getClient().from('leaderboard_entries').delete().eq('session_id', existingSession.data.id);
+            await db.getClient().from('game_sessions').delete().eq('id', existingSession.data.id);
+            
+            this.logger.info(`Deleted broken session, will create new one`);
+            // Continue to create new session below
+          }
         }
       }
 
@@ -124,6 +145,15 @@ export class GameService {
         }
       }
 
+      // Get and randomize questions BEFORE creating session
+      const questions = await db.getRandomQuestions('en', mode.questions);
+      if (questions.length < mode.questions) {
+        this.logger.error(`Not enough questions: need ${mode.questions}, found ${questions.length}`);
+        return { success: false, message: 'Not enough questions available' };
+      }
+
+      const randomizedQuestions = randomizeQuestions(questions, userId + periodId);
+
       // Create game session
       const session = await db.createGameSession({
         userId,
@@ -133,16 +163,15 @@ export class GameService {
         ipAddress
       });
 
-      // Get and randomize questions
-      const questions = await db.getRandomQuestions('de', mode.questions);
-      if (questions.length < mode.questions) {
-        return { success: false, message: 'Not enough questions available' };
-      }
-
-      const randomizedQuestions = randomizeQuestions(questions, userId + periodId);
-
       // Create session questions
-      await db.createSessionQuestions(session.id, randomizedQuestions);
+      try {
+        await db.createSessionQuestions(session.id, randomizedQuestions);
+      } catch (error) {
+        // If question assignment fails, delete the session
+        this.logger.error('Failed to assign questions, deleting session:', error);
+        await db.getClient().from('game_sessions').delete().eq('id', session.id);
+        throw error;
+      }
 
       // Track session activity
       this.activeSessions.set(session.id, {
