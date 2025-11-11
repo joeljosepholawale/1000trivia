@@ -1,27 +1,24 @@
-# Dependencies
-node_modules/
-.expo/
-.expo-shared/
+# ONLY TRACK backend-new/ and .md files
+# Everything else is excluded
 
-# Android/Gradle
-android/.gradle/
-android/build/
-android/app/build/
-*.apk
-*.aab
+# Exclude all files by default
+/*
 
-# Root workspace files
-# /package.json  - DO NOT EXCLUDE, needed for builds
-# /package-lock.json
+# But include these
+!.gitignore
+!.env.example
+!backend-new/
+!*.md
 
-# Build
-dist/
-build/
-*.apk
-*.aab
-*.ipa
+# Backend node_modules
+backend-new/node_modules/
+backend-new/dist/
+backend-new/logs/
+backend-new/.env
+backend-new/.env.local
 
 # Logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -29,20 +26,3 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-
-# Environment
-.env
-.env.local
-.env.*.local
-
-# Temporary
-*.log
-*.tmp
-.cache/
