@@ -12,7 +12,9 @@
     "migrate": "npx supabase db push",
     "seed:questions": "ts-node src/scripts/seedQuestions.ts",
     "generate:questions": "node scripts/generateQuestions.js",
-    "generate:batch": "node scripts/batchGenerateQuestions.js"
+    "generate:batch": "node scripts/batchGenerateQuestions.js",
+    "test:ai-questions": "ts-node -r tsconfig-paths/register src/scripts/testGeminiQuestions.ts",
+    "generate:ai-batch": "ts-node -r tsconfig-paths/register src/scripts/testGeminiQuestions.ts save"
   },
   "dependencies": {
     "@google/generative-ai": "^0.21.0",

@@ -1,5 +1,6 @@
 import { db } from './database';
 import { walletService } from './wallet';
+import { geminiQuestionService } from './geminiQuestions';
 import { 
   config, 
   randomizeQuestions, 
@@ -145,19 +146,7 @@ export class GameService {
         }
       }
 
-      // Get and randomize questions BEFORE creating session
-      const questions = await db.getRandomQuestions('en', mode.questions);
-      if (questions.length < mode.questions) {
-        this.logger.error(`Not enough questions: need ${mode.questions}, found ${questions.length}`);
-        return { success: false, message: 'Not enough questions available' };
-      }
-
-      this.logger.info(`Fetched ${questions.length} questions, first question:`, JSON.stringify(questions[0]));
-
-      // Skip randomizeQuestions for now - use questions directly
-      const randomizedQuestions = questions; // randomizeQuestions(questions, userId + periodId);
-
-      // Create game session
+      // Create game session FIRST
       const session = await db.createGameSession({
         userId,
         periodId,
@@ -166,14 +155,63 @@ export class GameService {
         ipAddress
       });
 
-      // Create session questions
-      try {
-        await db.createSessionQuestions(session.id, randomizedQuestions);
-      } catch (error) {
-        // If question assignment fails, delete the session
-        this.logger.error('Failed to assign questions, deleting session:', error);
-        await db.getClient().from('game_sessions').delete().eq('id', session.id);
-        throw error;
+      this.logger.info(`Created session ${session.id}, generating ${mode.questions} AI questions`);
+
+      // Generate AI questions for this session
+      const useAIGeneration = process.env.USE_AI_QUESTIONS === 'true';
+      
+      if (useAIGeneration) {
+        try {
+          const aiResult = await geminiQuestionService.generateQuestionsForSession(
+            session.id,
+            mode.questions,
+            mode.type, // category based on game mode
+            'en'
+          );
+
+          if (!aiResult.success || !aiResult.questions || aiResult.questions.length === 0) {
+            this.logger.warn('AI generation failed, falling back to database questions');
+            throw new Error('AI generation failed');
+          }
+
+          this.logger.info(`Successfully generated ${aiResult.questions.length} AI questions for session ${session.id}`);
+        } catch (aiError) {
+          // Fallback to database questions if AI fails
+          this.logger.error('AI generation error, using database fallback:', aiError);
+          
+          const questions = await db.getRandomQuestions('en', mode.questions);
+          if (questions.length < mode.questions) {
+            this.logger.error(`Not enough questions: need ${mode.questions}, found ${questions.length}`);
+            await db.getClient().from('game_sessions').delete().eq('id', session.id);
+            return { success: false, message: 'Not enough questions available' };
+          }
+
+          try {
+            await db.createSessionQuestions(session.id, questions);
+          } catch (error) {
+            this.logger.error('Failed to assign fallback questions, deleting session:', error);
+            await db.getClient().from('game_sessions').delete().eq('id', session.id);
+            throw error;
+          }
+        }
+      } else {
+        // Use database questions (old method)
+        const questions = await db.getRandomQuestions('en', mode.questions);
+        if (questions.length < mode.questions) {
+          this.logger.error(`Not enough questions: need ${mode.questions}, found ${questions.length}`);
+          await db.getClient().from('game_sessions').delete().eq('id', session.id);
+          return { success: false, message: 'Not enough questions available' };
+        }
+
+        this.logger.info(`Fetched ${questions.length} database questions`);
+
+        try {
+          await db.createSessionQuestions(session.id, questions);
+        } catch (error) {
+          this.logger.error('Failed to assign questions, deleting session:', error);
+          await db.getClient().from('game_sessions').delete().eq('id', session.id);
+          throw error;
+        }
       }
 
       // Track session activity
