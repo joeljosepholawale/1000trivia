@@ -19,19 +19,32 @@ interface GeneratedQuestion {
   is_active: boolean;
 }
 
+interface SessionQuestion {
+  sessionQuestionId: string;
+  text: string;
+  correct_answer: string;
+  options: string[];
+  randomized_options: string[];
+  difficulty: string;
+  category: string;
+}
+
 export class GeminiQuestionService {
   private genAI: GoogleGenerativeAI;
   private model: any;
   private logger: winston.Logger;
   private generationCache: Map<string, Date>;
+  private sessionQuestions: Map<string, SessionQuestion[]>; // In-memory storage: sessionId -> questions
 
   constructor() {
+    this.sessionQuestions = new Map();
     if (!process.env.GEMINI_API_KEY) {
       throw new Error('GEMINI_API_KEY environment variable is required');
     }
 
     this.genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    // Use gemini-2.5-flash - fastest and most cost-effective
+    this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
     
     this.logger = winston.createLogger({
       level: process.env.LOG_LEVEL || 'info',
@@ -332,14 +345,14 @@ Example format:
     count: number = 100,
     category?: string,
     language: string = 'en'
-  ): Promise<{ success: boolean; questions?: any[]; error?: string }> {
+  ): Promise<{ success: boolean; questions?: SessionQuestion[]; error?: string }> {
     try {
-      this.logger.info(`Generating ${count} questions for session ${sessionId}`);
+      this.logger.info(`Generating ${count} questions for session ${sessionId} (in-memory only)`);
 
       // Generate questions in batches of 30
       const batchSize = 30;
       const batches = Math.ceil(count / batchSize);
-      let allQuestions: any[] = [];
+      let allSessionQuestions: SessionQuestion[] = [];
 
       for (let i = 0; i < batches; i++) {
         const batchCount = Math.min(batchSize, count - (i * batchSize));
@@ -348,54 +361,28 @@ Example format:
         
         const questions = await this.generateQuestions(batchCount, category, language);
         
-        // Save each question and create session_question entry
-        for (const question of questions) {
-          // Insert question into questions table
-          const { data: savedQuestion, error: questionError } = await db.getClient()
-            .from('questions')
-            .insert({
-              text: question.text,
-              correct_answer: question.correct_answer,
-              options: question.options,
-              difficulty: question.difficulty,
-              category: question.category,
-              language: question.language,
-              is_active: question.is_active,
-              created_at: new Date().toISOString(),
-            })
-            .select()
-            .single();
-
-          if (questionError || !savedQuestion) {
-            this.logger.error('Error saving question:', questionError);
-            continue;
-          }
-
+        // Store questions in memory only (NO DATABASE SAVE)
+        for (let j = 0; j < questions.length; j++) {
+          const question = questions[j];
+          const questionIndex = allSessionQuestions.length;
+          
+          // Generate unique session question ID
+          const sessionQuestionId = `${sessionId}_q${questionIndex}`;
+          
           // Randomize options for this session
           const randomizedOptions = this.shuffleArray([...question.options]);
 
-          // Create session_question entry
-          const { data: sessionQuestion, error: sessionQuestionError } = await db.getClient()
-            .from('session_questions')
-            .insert({
-              session_id: sessionId,
-              question_id: savedQuestion.id,
-              randomized_options: randomizedOptions,
-              created_at: new Date().toISOString(),
-            })
-            .select()
-            .single();
+          const sessionQuestion: SessionQuestion = {
+            sessionQuestionId,
+            text: question.text,
+            correct_answer: question.correct_answer,
+            options: question.options,
+            randomized_options: randomizedOptions,
+            difficulty: question.difficulty,
+            category: question.category,
+          };
 
-          if (sessionQuestionError) {
-            this.logger.error('Error creating session question:', sessionQuestionError);
-            continue;
-          }
-
-          allQuestions.push({
-            ...savedQuestion,
-            sessionQuestionId: sessionQuestion.id,
-            randomizedOptions,
-          });
+          allSessionQuestions.push(sessionQuestion);
         }
 
         // Small delay between batches to avoid rate limiting
@@ -404,11 +391,14 @@ Example format:
         }
       }
 
-      this.logger.info(`Successfully generated ${allQuestions.length} questions for session ${sessionId}`);
+      // Store all questions in memory for this session
+      this.sessionQuestions.set(sessionId, allSessionQuestions);
+
+      this.logger.info(`Successfully generated ${allSessionQuestions.length} questions for session ${sessionId} (stored in memory)`);
 
       return {
         success: true,
-        questions: allQuestions,
+        questions: allSessionQuestions,
       };
 
     } catch (error) {
@@ -418,6 +408,29 @@ Example format:
         error: error instanceof Error ? error.message : 'Unknown error',
       };
     }
+  }
+
+  // Get questions for a session from memory
+  getSessionQuestions(sessionId: string, limit?: number, offset: number = 0): SessionQuestion[] {
+    const questions = this.sessionQuestions.get(sessionId) || [];
+    
+    if (limit) {
+      return questions.slice(offset, offset + limit);
+    }
+    
+    return questions.slice(offset);
+  }
+
+  // Get a specific question by sessionQuestionId
+  getQuestionById(sessionId: string, sessionQuestionId: string): SessionQuestion | undefined {
+    const questions = this.sessionQuestions.get(sessionId) || [];
+    return questions.find(q => q.sessionQuestionId === sessionQuestionId);
+  }
+
+  // Clear session questions from memory (call when session is completed or expired)
+  clearSessionQuestions(sessionId: string): void {
+    this.sessionQuestions.delete(sessionId);
+    this.logger.info(`Cleared questions from memory for session ${sessionId}`);
   }
 
   private shuffleArray<T>(array: T[]): T[] {

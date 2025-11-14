@@ -157,7 +157,7 @@ export class GameService {
 
       this.logger.info(`Created session ${session.id}, generating ${mode.questions} AI questions`);
 
-      // Generate AI questions for this session
+      // Generate AI questions for this session (in-memory only)
       const useAIGeneration = process.env.USE_AI_QUESTIONS === 'true';
       
       if (useAIGeneration) {
@@ -170,32 +170,19 @@ export class GameService {
           );
 
           if (!aiResult.success || !aiResult.questions || aiResult.questions.length === 0) {
-            this.logger.warn('AI generation failed, falling back to database questions');
-            throw new Error('AI generation failed');
+            this.logger.error('AI generation failed, cannot continue');
+            await db.getClient().from('game_sessions').delete().eq('id', session.id);
+            return { success: false, message: 'Failed to generate questions' };
           }
 
-          this.logger.info(`Successfully generated ${aiResult.questions.length} AI questions for session ${session.id}`);
+          this.logger.info(`Successfully generated ${aiResult.questions.length} AI questions in memory for session ${session.id}`);
         } catch (aiError) {
-          // Fallback to database questions if AI fails
-          this.logger.error('AI generation error, using database fallback:', aiError);
-          
-          const questions = await db.getRandomQuestions('en', mode.questions);
-          if (questions.length < mode.questions) {
-            this.logger.error(`Not enough questions: need ${mode.questions}, found ${questions.length}`);
-            await db.getClient().from('game_sessions').delete().eq('id', session.id);
-            return { success: false, message: 'Not enough questions available' };
-          }
-
-          try {
-            await db.createSessionQuestions(session.id, questions);
-          } catch (error) {
-            this.logger.error('Failed to assign fallback questions, deleting session:', error);
-            await db.getClient().from('game_sessions').delete().eq('id', session.id);
-            throw error;
-          }
+          this.logger.error('AI generation error:', aiError);
+          await db.getClient().from('game_sessions').delete().eq('id', session.id);
+          return { success: false, message: 'Failed to generate questions' };
         }
       } else {
-        // Use database questions (old method)
+        // Use database questions (old method - still saves to session_questions table)
         const questions = await db.getRandomQuestions('en', mode.questions);
         if (questions.length < mode.questions) {
           this.logger.error(`Not enough questions: need ${mode.questions}, found ${questions.length}`);
@@ -275,23 +262,46 @@ export class GameService {
         return { success: false, message: 'Session is not active' };
       }
 
-      // Get questions starting from current index
-      const questions = await db.getSessionQuestions(
-        sessionId,
-        batchSize,
-        session.current_question_index
-      );
+      const useAIGeneration = process.env.USE_AI_QUESTIONS === 'true';
+      let clientQuestions: any[] = [];
 
-      // Format questions for client (remove correct answers)
-      const clientQuestions = questions.map((sq, index) => ({
-        id: sq.question.id,
-        sessionQuestionId: sq.id,
-        index: session.current_question_index + index,
-        text: sq.question.text,
-        options: sq.randomized_options,
-        imageUrl: sq.question.image_url,
-        timeLimit: config.getConfig().game.defaultQuestionTimer
-      }));
+      if (useAIGeneration) {
+        // Get questions from memory
+        const questions = geminiQuestionService.getSessionQuestions(
+          sessionId,
+          batchSize,
+          session.current_question_index
+        );
+
+        // Format questions for client (remove correct answers)
+        clientQuestions = questions.map((q, index) => ({
+          id: q.sessionQuestionId, // Use sessionQuestionId as the ID
+          sessionQuestionId: q.sessionQuestionId,
+          index: session.current_question_index + index,
+          text: q.text,
+          options: q.randomized_options,
+          imageUrl: null,
+          timeLimit: config.getConfig().game.defaultQuestionTimer
+        }));
+      } else {
+        // Get questions from database (old method)
+        const questions = await db.getSessionQuestions(
+          sessionId,
+          batchSize,
+          session.current_question_index
+        );
+
+        // Format questions for client (remove correct answers)
+        clientQuestions = questions.map((sq, index) => ({
+          id: sq.question.id,
+          sessionQuestionId: sq.id,
+          index: session.current_question_index + index,
+          text: sq.question.text,
+          options: sq.randomized_options,
+          imageUrl: sq.question.image_url,
+          timeLimit: config.getConfig().game.defaultQuestionTimer
+        }));
+      }
 
       // Update session activity
       const sessionActivity = this.activeSessions.get(sessionId);
@@ -372,30 +382,49 @@ export class GameService {
         sessionActivity.lastActivity = new Date();
       }
 
-      // Get the question with correct answer
-      // questionId is actually the sessionQuestionId (ID of session_questions record)
-      const { data: sessionQuestion } = await db.getClient()
-        .from('session_questions')
-        .select(`
-          *,
-          question:questions(*)
-        `)
-        .eq('session_id', sessionId)
-        .eq('id', questionId) // Changed from question_id to id
-        .single();
+      const useAIGeneration = process.env.USE_AI_QUESTIONS === 'true';
+      let correctAnswer: string;
+      let actualQuestionId: string;
 
-      if (!sessionQuestion) {
-        this.logger.error(`Question not found: sessionId=${sessionId}, questionId=${questionId}`);
-        return { success: false, message: 'Question not found' };
+      if (useAIGeneration) {
+        // Get question from memory
+        const memoryQuestion = geminiQuestionService.getQuestionById(sessionId, questionId);
+        
+        if (!memoryQuestion) {
+          this.logger.error(`Question not found in memory: sessionId=${sessionId}, questionId=${questionId}`);
+          return { success: false, message: 'Question not found' };
+        }
+
+        correctAnswer = memoryQuestion.correct_answer;
+        actualQuestionId = memoryQuestion.sessionQuestionId; // Use sessionQuestionId for in-memory questions
+      } else {
+        // Get question from database (old method)
+        const { data: sessionQuestion } = await db.getClient()
+          .from('session_questions')
+          .select(`
+            *,
+            question:questions(*)
+          `)
+          .eq('session_id', sessionId)
+          .eq('id', questionId)
+          .single();
+
+        if (!sessionQuestion) {
+          this.logger.error(`Question not found: sessionId=${sessionId}, questionId=${questionId}`);
+          return { success: false, message: 'Question not found' };
+        }
+
+        correctAnswer = sessionQuestion.question.correct_answer;
+        actualQuestionId = sessionQuestion.question_id;
       }
 
       // Check if answer is correct
-      const isCorrect = !isSkipped && selectedAnswer === sessionQuestion.question.correct_answer;
+      const isCorrect = !isSkipped && selectedAnswer === correctAnswer;
 
-      // Submit answer - use the actual question ID, not sessionQuestionId
+      // Submit answer - only save answer and score, NOT the question
       await db.submitAnswer({
         sessionId,
-        questionId: sessionQuestion.question_id, // Use question_id from session_questions, not the input questionId
+        questionId: actualQuestionId,
         selectedAnswer: isSkipped ? undefined : selectedAnswer,
         isCorrect,
         isSkipped,
@@ -423,6 +452,12 @@ export class GameService {
         
         // Update leaderboard
         await this.updateLeaderboard(sessionId, session.user_id, session.period_id, newStats);
+
+        // Clear questions from memory (if using AI generation)
+        const useAIGeneration = process.env.USE_AI_QUESTIONS === 'true';
+        if (useAIGeneration) {
+          geminiQuestionService.clearSessionQuestions(sessionId);
+        }
       }
 
       // Update session
@@ -456,7 +491,7 @@ export class GameService {
         success: true,
         data: {
           isCorrect,
-          correctAnswer: isSkipped ? sessionQuestion.question.correct_answer : undefined,
+          correctAnswer: isSkipped ? correctAnswer : undefined,
           score: newStats.score,
           sessionComplete: isCompleted,
           progress: {
