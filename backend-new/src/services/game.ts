@@ -90,13 +90,23 @@ export class GameService {
       if (existingSession.data) {
         // User already joined this period
         if (existingSession.data.status === 'COMPLETED') {
-          // For FREE mode, allow multiple plays even after completion by creating
-          // a brand new session. For paid modes, keep the existing behavior and
-          // prevent re-entry once completed.
-          if (mode.type !== 'FREE') {
+          // For FREE mode, allow multiple plays even after completion by removing
+          // the previous completed session so the unique (user_id, period_id)
+          // constraint is satisfied when we create a new one.
+          if (mode.type === 'FREE') {
+            this.logger.info(`Removing completed FREE session ${existingSession.data.id} to allow replay`);
+
+            // Clean up related data for the old session
+            await db.getClient().from('answers').delete().eq('session_id', existingSession.data.id);
+            await db.getClient().from('session_questions').delete().eq('session_id', existingSession.data.id);
+            await db.getClient().from('leaderboard_entries').delete().eq('session_id', existingSession.data.id);
+            await db.getClient().from('game_sessions').delete().eq('id', existingSession.data.id);
+
+            // Then fall through to create a brand new session below
+          } else {
+            // For paid modes, prevent re-entry once completed.
             return { success: false, message: 'You have already completed this game' };
           }
-          // For FREE mode and COMPLETED status, fall through to create a new session.
         } else if (existingSession.data.status !== 'CANCELLED') {
           // Check if session has questions assigned
           const { data: questions, error: questionsError } = await db.getClient()
