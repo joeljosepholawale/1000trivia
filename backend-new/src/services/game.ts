@@ -362,6 +362,11 @@ export class GameService {
     message?: string;
   }> {
     try {
+      // Normalize response time to avoid NaN/invalid values breaking DB writes
+      const safeResponseTime = (typeof responseTime === 'number' && isFinite(responseTime) && responseTime >= 0)
+        ? responseTime
+        : 0;
+
       // Get session
       const session = await db.getGameSession(sessionId);
       if (!session) {
@@ -433,7 +438,7 @@ export class GameService {
         selectedAnswer: isSkipped ? undefined : selectedAnswer,
         isCorrect,
         isSkipped,
-        responseTime
+        responseTime: safeResponseTime
       });
 
       // Update session stats
@@ -444,8 +449,8 @@ export class GameService {
         skipped_answers: isSkipped ? session.skipped_answers + 1 : session.skipped_answers,
         score: calculateScore(isCorrect ? session.correct_answers + 1 : session.correct_answers),
         current_question_index: session.current_question_index + 1,
-        total_time_spent: session.total_time_spent + responseTime,
-        average_response_time: (session.total_time_spent + responseTime) / (session.answered_questions + 1)
+        total_time_spent: session.total_time_spent + safeResponseTime,
+        average_response_time: (session.total_time_spent + safeResponseTime) / (session.answered_questions + 1)
       };
 
       // Check if session is completed
@@ -482,7 +487,7 @@ export class GameService {
           questionId,
           isCorrect,
           isSkipped,
-          responseTime,
+          responseTime: safeResponseTime,
           score: newStats.score,
           progress: newStats.answered_questions / totalQuestions
         },
@@ -510,7 +515,7 @@ export class GameService {
       this.logger.error('Error submitting answer:', error);
       return {
         success: false,
-        message: 'Failed to submit answer'
+        message: error instanceof Error ? error.message : 'Failed to submit answer'
       };
     }
   }
