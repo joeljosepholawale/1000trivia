@@ -157,11 +157,12 @@ export class GameService {
         }
       }
 
-      // Create game session FIRST
+      // Create game session FIRST - store the FULL configured question count
+      // so that client UX can always display progress like 1/100, 2/100, etc.
       const session = await db.createGameSession({
         userId,
         periodId,
-        totalQuestions: totalQuestionsForSession,
+        totalQuestions: mode.questions,
         deviceInfo,
         ipAddress
       });
