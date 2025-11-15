@@ -114,6 +114,11 @@ export class GameService {
       }
 
       const mode = period.mode;
+
+      // Cap the number of questions per session to avoid long AI generation times
+      // This keeps the DB-configured value (mode.questions) as an upper bound
+      // but ensures we only generate a manageable number per session.
+      const totalQuestionsForSession = Math.min(mode.questions, 30);
       
       // Handle entry fee
       if (mode.entry_fee > 0) {
@@ -150,12 +155,12 @@ export class GameService {
       const session = await db.createGameSession({
         userId,
         periodId,
-        totalQuestions: mode.questions,
+        totalQuestions: totalQuestionsForSession,
         deviceInfo,
         ipAddress
       });
 
-      this.logger.info(`Created session ${session.id}, generating ${mode.questions} AI questions`);
+      this.logger.info(`Created session ${session.id}, generating ${totalQuestionsForSession} questions`);
 
       // Generate AI questions for this session (in-memory only)
       const useAIGeneration = process.env.USE_AI_QUESTIONS === 'true';
@@ -164,7 +169,7 @@ export class GameService {
         try {
           const aiResult = await geminiQuestionService.generateQuestionsForSession(
             session.id,
-            mode.questions,
+            totalQuestionsForSession,
             mode.type, // category based on game mode
             'en'
           );
@@ -183,9 +188,9 @@ export class GameService {
         }
       } else {
         // Use database questions (old method - still saves to session_questions table)
-        const questions = await db.getRandomQuestions('en', mode.questions);
-        if (questions.length < mode.questions) {
-          this.logger.error(`Not enough questions: need ${mode.questions}, found ${questions.length}`);
+        const questions = await db.getRandomQuestions('en', totalQuestionsForSession);
+        if (questions.length < totalQuestionsForSession) {
+          this.logger.error(`Not enough questions: need ${totalQuestionsForSession}, found ${questions.length}`);
           await db.getClient().from('game_sessions').delete().eq('id', session.id);
           return { success: false, message: 'Not enough questions available' };
         }
