@@ -425,11 +425,11 @@ export class GameService {
             .upsert({
               id: actualQuestionId,
               text: memoryQuestion.text,
-              correct_answer: memoryQuestion.correct_answer,
               options: memoryQuestion.options,
-              difficulty: memoryQuestion.difficulty,
-              category: memoryQuestion.category,
+              correct_answer: memoryQuestion.correct_answer,
               language: 'en',
+              category: 'general',
+              difficulty: 'MEDIUM',
               is_active: false,
             }, { onConflict: 'id' });
         } catch (stubError) {
