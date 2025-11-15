@@ -11,6 +11,12 @@ import {
   ModeType
 } from '@1000ravier/shared';
 import winston from 'winston';
+import { v5 as uuidv5 } from 'uuid';
+
+// Namespace UUID used to deterministically derive UUIDs for AI-only session questions
+// This ensures we always send a valid UUID to the database even though AI questions
+// are not stored in the questions table.
+const AI_QUESTION_NAMESPACE = '123e4567-e89b-12d3-a456-426614174000';
 
 export class GameService {
   private logger: winston.Logger;
@@ -406,7 +412,9 @@ export class GameService {
         }
 
         correctAnswer = memoryQuestion.correct_answer;
-        actualQuestionId = memoryQuestion.sessionQuestionId; // Use sessionQuestionId for in-memory questions
+        // Derive a deterministic UUID from the sessionQuestionId so the answers table
+        // can store a valid uuid even though this question exists only in memory.
+        actualQuestionId = uuidv5(memoryQuestion.sessionQuestionId, AI_QUESTION_NAMESPACE);
       } else {
         // Get question from database (old method)
         const { data: sessionQuestion } = await db.getClient()
