@@ -285,6 +285,18 @@ export class GameService {
           session.current_question_index
         );
 
+        // Trigger background generation of remaining questions up to the session total.
+        // This is fire-and-forget and will not delay the current response.
+        const existingForSession = geminiQuestionService.getSessionQuestions(sessionId);
+        if (existingForSession.length < session.total_questions) {
+          void geminiQuestionService.ensureQuestionsForSession(
+            sessionId,
+            session.total_questions,
+            session.period?.mode?.type,
+            'en'
+          );
+        }
+
         // Format questions for client (remove correct answers)
         clientQuestions = questions.map((q, index) => ({
           id: q.sessionQuestionId, // Use sessionQuestionId as the ID

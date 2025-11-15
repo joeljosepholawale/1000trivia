@@ -35,9 +35,11 @@ export class GeminiQuestionService {
   private logger: winston.Logger;
   private generationCache: Map<string, Date>;
   private sessionQuestions: Map<string, SessionQuestion[]>; // In-memory storage: sessionId -> questions
+  private generatingSessions: Set<string>; // Track sessions currently generating questions
 
   constructor() {
     this.sessionQuestions = new Map();
+    this.generatingSessions = new Set();
     if (!process.env.GEMINI_API_KEY) {
       throw new Error('GEMINI_API_KEY environment variable is required');
     }
@@ -354,6 +356,12 @@ Example format:
       const batches = Math.ceil(count / batchSize);
       let allSessionQuestions: SessionQuestion[] = [];
 
+      // If we already have questions for this session, start from them
+      const existing = this.sessionQuestions.get(sessionId) || [];
+      if (existing.length > 0) {
+        allSessionQuestions = [...existing];
+      }
+
       for (let i = 0; i < batches; i++) {
         const batchCount = Math.min(batchSize, count - (i * batchSize));
         
@@ -391,7 +399,7 @@ Example format:
         }
       }
 
-      // Store all questions in memory for this session
+      // Store all questions in memory for this session (append or set)
       this.sessionQuestions.set(sessionId, allSessionQuestions);
 
       this.logger.info(`Successfully generated ${allSessionQuestions.length} questions for session ${sessionId} (stored in memory)`);
@@ -407,6 +415,46 @@ Example format:
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
       };
+    }
+  }
+
+  // Ensure a minimum number of questions exist for a session, generating more in the background if needed
+  async ensureQuestionsForSession(
+    sessionId: string,
+    targetCount: number,
+    category?: string,
+    language: string = 'en'
+  ): Promise<void> {
+    const existing = this.sessionQuestions.get(sessionId) || [];
+    if (existing.length >= targetCount) {
+      return;
+    }
+
+    if (this.generatingSessions.has(sessionId)) {
+      // Already generating for this session; avoid duplicate work
+      return;
+    }
+
+    const remaining = targetCount - existing.length;
+    if (remaining <= 0) return;
+
+    this.generatingSessions.add(sessionId);
+
+    try {
+      this.logger.info(
+        `Background-generating ${remaining} additional questions for session ${sessionId} (target=${targetCount})`
+      );
+
+      const result = await this.generateQuestionsForSession(sessionId, remaining, category, language);
+      if (!result.success) {
+        this.logger.error(
+          `Failed background generation for session ${sessionId}: ${result.error || 'Unknown error'}`
+        );
+      }
+    } catch (error) {
+      this.logger.error('Error in ensureQuestionsForSession:', error);
+    } finally {
+      this.generatingSessions.delete(sessionId);
     }
   }
 
