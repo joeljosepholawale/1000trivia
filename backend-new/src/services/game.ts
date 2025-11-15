@@ -77,6 +77,8 @@ export class GameService {
         return { success: false, message: 'Game period is not active' };
       }
 
+      const mode = period.mode;
+
       // Check if user already has a session for this period
       const existingSession = await db.getClient()
         .from('game_sessions')
@@ -85,11 +87,17 @@ export class GameService {
         .eq('period_id', periodId)
         .single();
 
-      if (existingSession.data && existingSession.data.status !== 'CANCELLED') {
+      if (existingSession.data) {
         // User already joined this period
         if (existingSession.data.status === 'COMPLETED') {
-          return { success: false, message: 'You have already completed this game' };
-        } else {
+          // For FREE mode, allow multiple plays even after completion by creating
+          // a brand new session. For paid modes, keep the existing behavior and
+          // prevent re-entry once completed.
+          if (mode.type !== 'FREE') {
+            return { success: false, message: 'You have already completed this game' };
+          }
+          // For FREE mode and COMPLETED status, fall through to create a new session.
+        } else if (existingSession.data.status !== 'CANCELLED') {
           // Check if session has questions assigned
           const { data: questions, error: questionsError } = await db.getClient()
             .from('session_questions')
@@ -118,8 +126,6 @@ export class GameService {
           }
         }
       }
-
-      const mode = period.mode;
 
       // Cap the number of questions per session to avoid long AI generation times
       // This keeps the DB-configured value (mode.questions) as an upper bound
