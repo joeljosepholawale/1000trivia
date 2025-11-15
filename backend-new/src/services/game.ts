@@ -415,6 +415,26 @@ export class GameService {
         // Derive a deterministic UUID from the sessionQuestionId so the answers table
         // can store a valid uuid even though this question exists only in memory.
         actualQuestionId = uuidv5(memoryQuestion.sessionQuestionId, AI_QUESTION_NAMESPACE);
+
+        // Ensure a corresponding stub question exists in the questions table so the
+        // answers.question_id foreign key constraint is satisfied. We mark these
+        // questions as inactive so they are never selected as regular DB questions.
+        try {
+          await db.getClient()
+            .from('questions')
+            .upsert({
+              id: actualQuestionId,
+              text: memoryQuestion.text,
+              correct_answer: memoryQuestion.correct_answer,
+              options: memoryQuestion.options,
+              difficulty: memoryQuestion.difficulty,
+              category: memoryQuestion.category,
+              language: 'en',
+              is_active: false,
+            }, { onConflict: 'id' });
+        } catch (stubError) {
+          this.logger.error('Failed to upsert AI stub question:', stubError);
+        }
       } else {
         // Get question from database (old method)
         const { data: sessionQuestion } = await db.getClient()
