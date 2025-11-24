@@ -221,22 +221,22 @@ router.get('/stats', auth, async (req, res) => {
   }
 });
 
-// POST /wallet/process-purchase - Process credit purchase (called by payment webhook)
-router.post('/process-purchase', auth, async (req, res) => {
+// POST /wallet/flutterwave/confirm-purchase - Confirm credit purchase via Flutterwave
+router.post('/flutterwave/confirm-purchase', auth, async (req, res) => {
   try {
     const userId = req.user.id;
-    const { bundleId, paymentIntentId } = req.body;
+    const { bundleId, txRef } = req.body;
 
-    if (!bundleId || !paymentIntentId) {
+    if (!bundleId || !txRef) {
       return res.status(400).json({
-        error: 'Bundle ID and payment intent ID are required'
+        error: 'Bundle ID and txRef are required'
       });
     }
 
     const result = await walletService.processCreditsPurchase(
       userId,
       bundleId,
-      paymentIntentId
+      txRef
     );
 
     if (!result.success) {

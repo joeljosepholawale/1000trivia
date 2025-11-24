@@ -284,11 +284,11 @@ export class WalletService {
     }
   }
 
-  // NEW: Process credit purchase
+  // NEW: Process credit purchase (Flutterwave-based)
   async processCreditsPurchase(
     userId: string,
     bundleId: string,
-    paymentIntentId: string
+    txRef: string
   ): Promise<{
     success: boolean;
     data?: { creditsAdded: number };
@@ -332,17 +332,24 @@ export class WalletService {
           amount: bundle.credits,
           description: `Credit purchase - ${bundle.name}`,
           category: 'purchase',
-          reference_id: paymentIntentId
+          reference_id: txRef
         });
 
-      // Update payment record
+      // Create payment record (if not already present)
       await db.getClient()
         .from('payments')
-        .update({
-          status: 'succeeded',
-          updated_at: new Date().toISOString()
-        })
-        .eq('stripe_payment_intent_id', paymentIntentId);
+        .upsert({
+          user_id: userId,
+          amount: parseFloat(bundle.price_usd),
+          currency: 'USD',
+          type: 'CREDITS_BUNDLE',
+          status: 'SUCCEEDED',
+          metadata: {
+            provider: 'flutterwave',
+            txRef,
+            bundleId,
+          },
+        });
 
       this.logger.info(`Credits purchased: ${userId}, bundle: ${bundleId}, credits: ${bundle.credits}`);
 

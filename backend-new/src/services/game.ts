@@ -198,16 +198,62 @@ export class GameService {
           );
 
           if (!aiResult.success || !aiResult.questions || aiResult.questions.length === 0) {
-            this.logger.error('AI generation failed, cannot continue');
+            this.logger.error(
+              `AI generation failed for session ${session.id}, falling back to DB questions: ${
+                aiResult.error || 'no questions returned'
+              }`
+            );
+
+            // Fallback: try to use database questions instead of failing the join
+            const questions = await db.getRandomQuestions('en', totalQuestionsForSession);
+            if (questions.length < totalQuestionsForSession) {
+              this.logger.error(
+                `Fallback DB questions also insufficient: need ${totalQuestionsForSession}, found ${questions.length}`
+              );
+              await db.getClient().from('game_sessions').delete().eq('id', session.id);
+              return { success: false, message: 'Failed to generate questions' };
+            }
+
+            this.logger.info(
+              `Fallback succeeded: using ${questions.length} DB questions for session ${session.id}`
+            );
+
+            try {
+              await db.createSessionQuestions(session.id, questions);
+            } catch (assignError) {
+              this.logger.error('Failed to assign fallback DB questions, deleting session:', assignError);
+              await db.getClient().from('game_sessions').delete().eq('id', session.id);
+              return { success: false, message: 'Failed to generate questions' };
+            }
+          } else {
+            this.logger.info(
+              `Successfully generated ${aiResult.questions.length} AI questions in memory for session ${session.id}`
+            );
+          }
+        } catch (aiError) {
+          this.logger.error('AI generation error, attempting DB fallback:', aiError);
+
+          // Fallback path on unexpected Gemini errors
+          try {
+            const questions = await db.getRandomQuestions('en', totalQuestionsForSession);
+            if (questions.length < totalQuestionsForSession) {
+              this.logger.error(
+                `Fallback DB questions also insufficient: need ${totalQuestionsForSession}, found ${questions.length}`
+              );
+              await db.getClient().from('game_sessions').delete().eq('id', session.id);
+              return { success: false, message: 'Failed to generate questions' };
+            }
+
+            this.logger.info(
+              `Fallback succeeded: using ${questions.length} DB questions for session ${session.id}`
+            );
+
+            await db.createSessionQuestions(session.id, questions);
+          } catch (fallbackError) {
+            this.logger.error('Fallback DB question assignment failed, deleting session:', fallbackError);
             await db.getClient().from('game_sessions').delete().eq('id', session.id);
             return { success: false, message: 'Failed to generate questions' };
           }
-
-          this.logger.info(`Successfully generated ${aiResult.questions.length} AI questions in memory for session ${session.id}`);
-        } catch (aiError) {
-          this.logger.error('AI generation error:', aiError);
-          await db.getClient().from('game_sessions').delete().eq('id', session.id);
-          return { success: false, message: 'Failed to generate questions' };
         }
       } else {
         // Use database questions (old method - still saves to session_questions table)

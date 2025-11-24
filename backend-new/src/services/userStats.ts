@@ -308,6 +308,64 @@ class UserStatsService {
         },
       ];
 
+      // Reward newly unlocked achievements via wallet and record them
+      try {
+        // Existing stored user_achievements (by achievement_type)n        const { data: stored } = await db.getClient()
+          .from('user_achievements')
+          .select('achievement_type, credits_reward')
+          .eq('user_id', userId);
+
+        const storedMap = new Map<string, number>();
+        (stored || []).forEach((row: any) => {
+          storedMap.set(row.achievement_type, row.credits_reward || 0);
+        });
+
+        for (const ach of achievements) {
+          if (!ach.unlocked) continue;
+
+          // If an entry already exists, skip (reward already given)
+          if (storedMap.has(ach.id)) continue;
+
+          // Look up credits_reward from achievements table if available
+          const { data: achievementRow } = await db.getClient()
+            .from('achievements')
+            .select('credits_reward')
+            .eq('achievement_key', ach.id)
+            .single();
+
+          const rewardAmount = achievementRow?.credits_reward || 0;
+
+          // Insert into user_achievements
+          await db.getClient()
+            .from('user_achievements')
+            .insert({
+              user_id: userId,
+              achievement_type: ach.id,
+              achievement_name: ach.title,
+              description: ach.description,
+              credits_reward: rewardAmount,
+              progress_data: {
+                progress: ach.progress,
+                maxProgress: ach.maxProgress,
+              },
+            });
+
+          // Award credits if there is a positive reward amount
+          if (rewardAmount > 0) {
+            await db.updateWalletBalance(
+              userId,
+              rewardAmount,
+              'ACHIEVEMENT_REWARD',
+              `Achievement reward: ${ach.title}`,
+              ach.id,
+              { achievementId: ach.id, title: ach.title }
+            );
+          }
+        }
+      } catch (rewardError) {
+        console.error('Error processing achievement rewards:', rewardError);
+      }
+
       return achievements;
     } catch (error) {
       console.error('Error fetching user achievements:', error);

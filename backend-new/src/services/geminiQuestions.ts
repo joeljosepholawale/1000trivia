@@ -425,8 +425,12 @@ Example format:
     category?: string,
     language: string = 'en'
   ): Promise<void> {
+    // Hard safety cap to prevent unbounded generation per session
+    const HARD_MAX_PER_SESSION = 150;
+    const effectiveTarget = Math.min(targetCount, HARD_MAX_PER_SESSION);
+
     const existing = this.sessionQuestions.get(sessionId) || [];
-    if (existing.length >= targetCount) {
+    if (existing.length >= effectiveTarget) {
       return;
     }
 
@@ -435,14 +439,14 @@ Example format:
       return;
     }
 
-    const remaining = targetCount - existing.length;
+    const remaining = effectiveTarget - existing.length;
     if (remaining <= 0) return;
 
     this.generatingSessions.add(sessionId);
 
     try {
       this.logger.info(
-        `Background-generating ${remaining} additional questions for session ${sessionId} (target=${targetCount})`
+        `Background-generating ${remaining} additional questions for session ${sessionId} (target=${effectiveTarget}, requestedTarget=${targetCount})`
       );
 
       const result = await this.generateQuestionsForSession(sessionId, remaining, category, language);

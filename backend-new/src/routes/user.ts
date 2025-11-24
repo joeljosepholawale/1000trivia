@@ -92,7 +92,45 @@ router.get('/profile', authService.authenticate, async (req, res) => {
       success: false,
       error: {
         code: 'PROFILE_FETCH_FAILED',
-        message: error.message || 'Failed to fetch user profile',
+        message: error.message || 'Failed to fetch profile',
+      },
+    });
+  }
+});
+
+/**
+ * GET /api/user/streaks
+ * Get user's daily claim/play streak information from wallet
+ */
+router.get('/streaks', authService.authenticate, async (req, res) => {
+  try {
+    const userId = (req as any).user.id;
+
+    const wallet = await db.getWallet(userId);
+    if (!wallet) {
+      return res.json({
+        success: true,
+        data: {
+          dailyClaimStreak: 0,
+          lastDailyClaimAt: null,
+        },
+      });
+    }
+
+    res.json({
+      success: true,
+      data: {
+        dailyClaimStreak: wallet.daily_claim_streak || 0,
+        lastDailyClaimAt: wallet.last_daily_claim_at || null,
+      },
+    });
+  } catch (error: any) {
+    console.error('Error fetching user streaks:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'STREAKS_FETCH_FAILED',
+        message: error.message || 'Failed to fetch streaks',
       },
     });
   }

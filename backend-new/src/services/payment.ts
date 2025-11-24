@@ -1,4 +1,5 @@
 import Stripe from 'stripe';
+import fetch from 'node-fetch';
 import { db } from './database';
 import { walletService } from './wallet';
 import { config } from '@1000ravier/shared';
@@ -7,6 +8,7 @@ import winston from 'winston';
 export class PaymentService {
   private stripe: Stripe;
   private logger: winston.Logger;
+  private flutterwaveSecretKey: string | null;
 
   constructor() {
     this.logger = winston.createLogger({
@@ -30,9 +32,148 @@ export class PaymentService {
     });
 
     this.logger.info('Payment service initialized');
+
+    // Flutterwave secret key (optional during migration)
+    this.flutterwaveSecretKey = process.env.FLW_SECRET_KEY || null;
   }
 
-  // Create payment intent for credits bundle
+  /**
+   * Verify a Flutterwave transaction by reference using the v3 API.
+   * This is used for both entry fees and credit purchases.
+   */
+  private async verifyFlutterwaveTransactionByRef(txRef: string): Promise<{
+    success: boolean;
+    amount?: number;
+    currency?: string;
+    customerEmail?: string;
+    raw?: any;
+    message?: string;
+  }> {
+    if (!this.flutterwaveSecretKey) {
+      this.logger.error('FLW_SECRET_KEY is not configured');
+      return { success: false, message: 'Payment configuration error' };
+    }
+
+    try {
+      const url = `https://api.flutterwave.com/v3/transactions/verify_by_reference?tx_ref=${encodeURIComponent(
+        txRef,
+      )}`;
+
+      const resp = await fetch(url, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${this.flutterwaveSecretKey}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!resp.ok) {
+        const text = await resp.text();
+        this.logger.error('Flutterwave verify_by_reference failed', { status: resp.status, body: text });
+        return { success: false, message: 'Failed to verify payment' };
+      }
+
+      const json: any = await resp.json();
+      if (json.status !== 'success' || !json.data) {
+        this.logger.error('Flutterwave verification unsuccessful', json);
+        return { success: false, message: 'Payment not successful' };
+      }
+
+      const data = json.data;
+      if (data.status !== 'successful') {
+        this.logger.warn('Flutterwave transaction not successful', { txRef, status: data.status });
+        return { success: false, message: 'Payment not successful' };
+      }
+
+      return {
+        success: true,
+        amount: data.amount,
+        currency: (data.currency || '').toUpperCase(),
+        customerEmail: data.customer?.email,
+        raw: data,
+      };
+    } catch (error) {
+      this.logger.error('Error verifying Flutterwave transaction', error);
+      return { success: false, message: 'Failed to verify payment' };
+    }
+  }
+
+  /**
+   * Process a Flutterwave-powered game entry fee for a given period.
+   * This verifies the transaction and records a payment row.
+   */
+  async processFlutterwaveEntryFee(
+    userId: string,
+    periodId: string,
+    txRef: string,
+  ): Promise<{ success: boolean; message?: string; amount?: number; currency?: string }> {
+    try {
+      const period = await db.getPeriodById(periodId);
+      if (!period || !period.mode) {
+        return { success: false, message: 'Game period not found' };
+      }
+
+      const mode = period.mode;
+      const expectedAmount = mode.entry_fee;
+      if (!expectedAmount || mode.entry_fee_currency !== 'USD') {
+        return { success: false, message: 'Invalid entry fee configuration' };
+      }
+
+      const verify = await this.verifyFlutterwaveTransactionByRef(txRef);
+      if (!verify.success || !verify.amount || !verify.currency) {
+        return { success: false, message: verify.message || 'Payment verification failed' };
+      }
+
+      if (verify.currency !== 'USD') {
+        this.logger.error('Flutterwave currency mismatch for entry fee', {
+          txRef,
+          expected: 'USD',
+          got: verify.currency,
+        });
+        return { success: false, message: 'Invalid payment currency' };
+      }
+
+      // Allow small rounding differences (e.g., cents)
+      if (Math.round(verify.amount) !== Math.round(expectedAmount)) {
+        this.logger.error('Flutterwave amount mismatch for entry fee', {
+          txRef,
+          expected: expectedAmount,
+          got: verify.amount,
+        });
+        return { success: false, message: 'Invalid payment amount' };
+      }
+
+      // Record / upsert payment row
+      await db.getClient()
+        .from('payments')
+        .upsert({
+          user_id: userId,
+          amount: expectedAmount,
+          currency: 'USD',
+          type: 'ENTRY_FEE',
+          status: 'SUCCEEDED',
+          metadata: {
+            provider: 'flutterwave',
+            txRef,
+            periodId,
+            modeType: mode.type,
+          },
+        });
+
+      this.logger.info('Flutterwave entry fee processed', { userId, periodId, txRef });
+
+      return {
+        success: true,
+        amount: expectedAmount,
+        currency: 'USD',
+      };
+    } catch (error) {
+      this.logger.error('Error processing Flutterwave entry fee', error);
+      return { success: false, message: 'Failed to process payment' };
+    }
+  }
+
+  // Create payment intent for credits bundle (Stripe - legacy, kept for backward compatibility)
   async createCreditsBundlePayment(
     userId: string,
     bundleType: 'bundle100' | 'bundle1000',

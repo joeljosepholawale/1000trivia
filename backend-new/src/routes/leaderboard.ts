@@ -4,7 +4,7 @@ import { leaderboardService } from '../services/leaderboard';
 
 const router = Router();
 
-// GET /leaderboard/rank - Get current user's rank
+// GET /leaderboard/rank - Get current user's rank for a period
 router.get('/rank', authService.authenticate, async (req, res) => {
   try {
     const user = (req as any).user;
@@ -50,25 +50,57 @@ router.get('/rank', authService.authenticate, async (req, res) => {
   }
 });
 
-// GET /leaderboard/periods - Get available periods
+// GET /leaderboard/periods - Get available periods (history of competitions)
 router.get('/periods', async (req, res) => {
   try {
-    const modeType = req.query.modeType as string;
+    const modeType = req.query.modeType as string | undefined;
     const limit = Math.min(parseInt(req.query.limit as string) || 10, 50);
-    
-    // This would need to be implemented in leaderboardService
-    // For now, return empty array
+    const offset = parseInt(req.query.offset as string) || 0;
+
+    const { db } = await import('../services/database');
+
+    let query = db.getClient()
+      .from('periods')
+      .select(`
+        id,
+        name,
+        start_date,
+        end_date,
+        status,
+        total_participants,
+       // GET /leaderboard/winners - Get winners list (paged)
+router.get('/winners', async (req, res) => {
+  try {
+    const modeType = req.query.modeType as string;
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 200);
+
+    const result = await leaderboardService.getHistoricalWinners(
+      modeType as any,
+      limit,
+    );
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        error: {
+          code: 'INTERNAL_ERROR',
+          message: 'Failed to get winners',
+        },
+      });
+    }
+
     res.json({
       success: true,
-      data: []
+      data: result.data,
     });
   } catch (error) {
+    console.error('Error fetching winners:', error);
     res.status(500).json({
       success: false,
       error: {
         code: 'INTERNAL_ERROR',
-        message: 'Failed to get periods'
-      }
+        message: 'Failed to get winners',
+      },
     });
   }
 });
@@ -81,7 +113,7 @@ router.get('/winners/recent', async (req, res) => {
 
     const result = await leaderboardService.getHistoricalWinners(
       modeType as any,
-      limit
+      limit,
     );
 
     if (!result.success) {
@@ -89,27 +121,29 @@ router.get('/winners/recent', async (req, res) => {
         success: false,
         error: {
           code: 'INTERNAL_ERROR',
-          message: 'Failed to get recent winners'
-        }
+          message: 'Failed to get recent winners',
+        },
       });
     }
 
     res.json({
       success: true,
-      data: result.data
+      data: result.data,
     });
   } catch (error) {
+    console.error('Error fetching recent winners:', error);
     res.status(500).json({
       success: false,
       error: {
         code: 'INTERNAL_ERROR',
-        message: 'Failed to get recent winners'
-      }
+        message: 'Failed to get recent winners',
+      },
     });
   }
 });
 
 // GET /leaderboard/historical/winners - Get historical winners
+// GET /leaderboard/historical/winners - Get historical winners (alias of /winners)
 router.get('/historical/winners', async (req, res) => {
   try {
     const modeType = req.query.modeType as string;
@@ -117,7 +151,7 @@ router.get('/historical/winners', async (req, res) => {
 
     const result = await leaderboardService.getHistoricalWinners(
       modeType as any,
-      limit
+      limit,
     );
 
     if (!result.success) {
@@ -125,22 +159,74 @@ router.get('/historical/winners', async (req, res) => {
         success: false,
         error: {
           code: 'INTERNAL_ERROR',
-          message: 'Failed to get historical winners'
-        }
+          message: 'Failed to get historical winners',
+        },
       });
     }
 
     res.json({
       success: true,
-      data: result.data
+      data: result.data,
     });
   } catch (error) {
+    console.error('Error fetching historical winners:', error);
     res.status(500).json({
       success: false,
       error: {
         code: 'INTERNAL_ERROR',
-        message: 'Failed to get historical winners'
-      }
+        message: 'Failed to get historical winners',
+      },
+    });
+  }
+});
+
+// GET /leaderboard/user/stats - Get basic user stats for leaderboard UI
+router.get('/user/stats', authService.authenticate, async (req, res) => {
+  try {
+    const user = (req as any).user;
+    const { db } = await import('../services/database');
+
+    const { data: sessions } = await db.getClient()
+      .from('game_sessions')
+      .select('score, status')
+      .eq('user_id', user.id)
+      .eq('status', 'COMPLETED');
+
+    const { data: wins } = await db.getClient()
+      .from('winners')
+      .select('payout_amount, rank')
+      .eq('user_id', user.id)
+      .eq('status', 'PAID');
+
+    const completedSessions = sessions || [];
+    const totalWins = wins || [];
+
+    const totalGames = completedSessions.length;
+    const averageScore = totalGames > 0
+      ? completedSessions.reduce((sum: number, s: any) => sum + (s.score || 0), 0) / totalGames
+      : 0;
+    const bestRank = totalWins.length > 0
+      ? Math.min(...totalWins.map((w: any) => w.rank || 0))
+      : 0;
+    const winnings = totalWins.reduce((sum: number, w: any) => sum + (w.payout_amount || 0), 0);
+
+    res.json({
+      success: true,
+      data: {
+        totalGames,
+        averageScore,
+        bestRank,
+        winnings,
+      },
+    });
+  } catch (error) {
+    console.error('Error fetching user leaderboard stats:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'INTERNAL_ERROR',
+        message: 'Failed to get user stats',
+      },
     });
   }
 });

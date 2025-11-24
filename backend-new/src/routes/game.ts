@@ -406,26 +406,33 @@ router.post('/join', authService.authenticate, async (req, res) => {
 router.post('/join-with-payment', authService.authenticate, async (req, res) => {
   try {
     const user = (req as any).user;
-    const { periodId, paymentIntentId, deviceInfo } = req.body;
+    const { periodId, txRef, flutterwaveTransactionId, deviceInfo } = req.body;
 
-    if (!periodId || !paymentIntentId) {
+    if (!periodId || (!txRef && !flutterwaveTransactionId)) {
       return res.status(400).json({
         success: false,
         error: {
           code: 'INVALID_INPUT',
-          message: 'Period ID and payment intent ID are required'
+          message: 'Period ID and Flutterwave transaction reference are required'
         }
       });
     }
 
-    // Validate payment
-    const paymentValidation = await paymentService.validateEntryPayment(user.id, periodId);
-    if (!paymentValidation.success || !paymentValidation.isPaid) {
+    const txReference = txRef || flutterwaveTransactionId;
+
+    // Validate payment via Flutterwave
+    const paymentResult = await paymentService.processFlutterwaveEntryFee(
+      user.id,
+      periodId,
+      txReference,
+    );
+
+    if (!paymentResult.success) {
       return res.status(402).json({
         success: false,
         error: {
           code: 'PAYMENT_NOT_VERIFIED',
-          message: 'Payment not verified for this game entry'
+          message: paymentResult.message || 'Payment not verified for this game entry'
         }
       });
     }
