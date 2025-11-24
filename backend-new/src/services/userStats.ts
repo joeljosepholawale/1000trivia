@@ -310,7 +310,8 @@ class UserStatsService {
 
       // Reward newly unlocked achievements via wallet and record them
       try {
-        // Existing stored user_achievements (by achievement_type)n        const { data: stored } = await db.getClient()
+        // Existing stored user_achievements (by achievement_type)
+        const { data: stored } = await db.getClient()
           .from('user_achievements')
           .select('achievement_type, credits_reward')
           .eq('user_id', userId);

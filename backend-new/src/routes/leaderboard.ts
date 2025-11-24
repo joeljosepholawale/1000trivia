@@ -68,7 +68,51 @@ router.get('/periods', async (req, res) => {
         end_date,
         status,
         total_participants,
-       // GET /leaderboard/winners - Get winners list (paged)
+        prize_pool,
+        mode:game_modes(*)
+      `)
+      .order('start_date', { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (modeType) {
+      query = query.eq('mode.type', modeType.toUpperCase());
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      throw error;
+    }
+
+    const periods = (data || []).map((row: any) => ({
+      id: row.id,
+      name: row.name,
+      startDate: row.start_date,
+      endDate: row.end_date,
+      status: row.status,
+      totalParticipants: row.total_participants || 0,
+      totalPrizePool: row.prize_pool || 0,
+      modeId: row.mode?.id,
+      mode: row.mode || null,
+    }));
+
+    res.json({
+      success: true,
+      data: periods,
+    });
+  } catch (error) {
+    console.error('Error fetching periods history:', error);
+    res.status(500).json({
+      success: false,
+      error: {
+        code: 'INTERNAL_ERROR',
+        message: 'Failed to get periods',
+      },
+    });
+  }
+});
+
+// GET /leaderboard/winners - Get winners list (paged)
 router.get('/winners', async (req, res) => {
   try {
     const modeType = req.query.modeType as string;
@@ -142,7 +186,6 @@ router.get('/winners/recent', async (req, res) => {
   }
 });
 
-// GET /leaderboard/historical/winners - Get historical winners
 // GET /leaderboard/historical/winners - Get historical winners (alias of /winners)
 router.get('/historical/winners', async (req, res) => {
   try {
